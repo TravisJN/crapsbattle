@@ -1,0 +1,24 @@
+.dice-roller-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.dice-roller__dice-row {
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.dice-roller__num-dice-container {
+    display: flex;
+    justify-content: center;
+}
+
+.dice-roller__num-dice-input {
+    margin-left: 10px;
+    height: 25px;
+}
+
+.dice-roller__num-dice-label {
+    /* margin: 0px; */
+}
