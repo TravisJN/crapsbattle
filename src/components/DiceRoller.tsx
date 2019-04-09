@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './diceRoller.css';
 import Die from './Die';
 
-
 interface Props {
     setRolledDice: (rolledNums:number[])=>void;
     selectDie: (index:number)=>void;
@@ -35,7 +34,7 @@ class DiceRoller extends Component<Props, State> {
             <div className="dice-roller-container">
                 <div className="dice-roller__dice-row">
                     {rolledNums.map((num, idx) => {
-                        return <Die num={num} idx={idx} key={"die" + idx} />
+                        return <Die num={num} idx={idx} key={"die"+idx} />
                     })}
                 </div>
                 <button onClick={this.rollDice}>Roll</button>
@@ -45,18 +44,6 @@ class DiceRoller extends Component<Props, State> {
                 </div>
             </div>
         )
-    }
-
-    private setUpClickDieHandler = (idx: number) => {
-        return (event: React.MouseEvent<HTMLElement>) => {
-            console.log({
-                action: 'click',
-                idx,
-                event,
-            });
-
-            this.props.selectDie(idx);
-        }
     }
 
     private rollDice = () => {
