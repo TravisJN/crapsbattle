@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-import DiceRoller from './components/diceRoller';
+import GameBoard from './components/GameBoard';
 
-class App extends Component {
+interface Props { }
+interface State { }
+
+class App extends Component<Props, State> {
   render() {
     return (
       <div className="App">
@@ -10,7 +13,7 @@ class App extends Component {
           enemy
         </div>
         <div className="board">
-          <DiceRoller />
+          <GameBoard />
         </div>
         <div className="player">
           player

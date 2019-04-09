@@ -19,6 +19,6 @@
     height: 25px;
 }
 
-.dice-roller__num-dice-label {
-    /* margin: 0px; */
+.selected {
+    border: 1px solid white;
 }
