@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
 import './diceRoller.css';
 import Die from './Die';
+import DieModel from '../data/DieModel';
+
 
 interface Props {
-    setRolledDice: (rolledNums:number[])=>void;
+    setRolledDice: (rolledNums:DieModel[])=>void;
     selectDie: (index:number)=>void;
     selectedDice: number[];
 }
 
 interface State {
     numDice: number;
-    rolledNums: number[];
+    rolledNums: DieModel[];
 }
 
 class DiceRoller extends Component<Props, State> {
-    public state: State;
+    readonly state: State = {
+        numDice: 6,
+        rolledNums: [],
+    };
 
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            numDice: 6,
-            rolledNums: [1, 2, 3, 4, 5, 6],
-        }
-
+        this.state.rolledNums = this.getNewDice(this.state.numDice);
         this.props.setRolledDice(this.state.rolledNums);
     }
 
@@ -33,8 +34,8 @@ class DiceRoller extends Component<Props, State> {
         return (
             <div className="dice-roller-container">
                 <div className="dice-roller__dice-row">
-                    {rolledNums.map((num, idx) => {
-                        return <Die num={num} idx={idx} key={"die"+idx} />
+                    {rolledNums.map((die: DieModel, idx: number) => {
+                        return <Die num={die.number} idx={idx} selected={die.selected} onClick={this.onDieClicked} key={"die"+idx} />
                     })}
                 </div>
                 <button onClick={this.rollDice}>Roll</button>
@@ -47,10 +48,17 @@ class DiceRoller extends Component<Props, State> {
     }
 
     private rollDice = () => {
-        const rolledNums = Array.from({length: this.state.numDice}, () => this.getRandomInt(6) + 1);
+        this.setState((prevState: State) => {
+            const rolledNums = prevState.rolledNums.map((aDie: DieModel) => {
+                if (!aDie.selected) {
+                    aDie.number = this.getRandomInt(6) + 1;
+                }
 
-        this.setState({ rolledNums });
-        this.props.setRolledDice(rolledNums);
+                return aDie;
+            });
+            return { rolledNums };
+        });
+        this.props.setRolledDice(this.state.rolledNums);
     }
 
     private updateNumDice = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,9 +71,20 @@ class DiceRoller extends Component<Props, State> {
         return Math.floor(Math.random() * Math.floor(max));
       }
 
-      private getDieContainerClass = (idx: number): string => {
-        return "dice-roller_die-container";
-      }
+    private getNewDice(numDice): DieModel[] {
+        return Array.from({length: numDice}, (e, i) => {
+            return new DieModel(this.getRandomInt(6) + 1, i);
+        });
+    }
+
+    private onDieClicked = (index: number) => {
+        this.setState((prevState: State) => {
+            prevState.rolledNums[index].selected = !prevState.rolledNums[index].selected
+            return {
+                rolledNums: prevState.rolledNums,
+            };
+        });
+    }
 
 }
 

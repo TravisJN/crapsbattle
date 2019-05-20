@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import DiceRoller from './DiceRoller';
+import GameStateModel from '../data/GameStateModel';
+import DieModel from '../data/DieModel';
 
-interface Props { }
+interface Props {
+    gameModel: GameStateModel;
+ }
 
 interface State {
-    currentPlayer :string;
-    diceHeld: number[];
+    currentPlayer: number;
     totalPoints: number;
-    rolledNums: number [];
+    diceHeld: number[];
+    rolledNums: DieModel[];
 }
 
 class GameBoard extends Component<Props, State> {
@@ -17,9 +21,9 @@ class GameBoard extends Component<Props, State> {
         super(props);
 
         this.state = {
-            currentPlayer: 'player',
-            diceHeld: [],
+            currentPlayer: 0,
             totalPoints: 0,
+            diceHeld: [],
             rolledNums: [],
         }
     }
@@ -38,8 +42,9 @@ class GameBoard extends Component<Props, State> {
         this.setState({ diceHeld });
     }
 
-    setRolledDice = (rolledNums: number[]) => {
-        this.setState({ rolledNums });
+    setRolledDice = (rolledNums: DieModel[]) => {
+        console.log(rolledNums);
+        //this.setState({ rolledNums });
     }
 }
 

@@ -10,11 +10,11 @@ import './diceRoller.css';
 interface Props {
     num: number;
     idx: number;
- }
-interface State {
-    containerClassName: string;
     selected: boolean;
+    onClick: any;
  }
+
+interface State { }
 
 class Die extends Component<Props, State> {
     private imageMap: { [n:number]: string } = {
@@ -26,32 +26,20 @@ class Die extends Component<Props, State> {
         6: dice6,
     };
 
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            containerClassName: "dice-roller_die-container",
-            selected: false,
-        }
-    }
-
     public render = () => {
         return (
-            <div className={this.state.containerClassName} key={this.props.idx} onClick={this.select}>
+            <div className={this.getContainerClassName()} key={this.props.idx} onClick={this.select}>
                 <img src={this.imageMap[this.props.num]} width="60" height="60" />
             </div>
         )
     }
 
-    private roll = () => {
-
+    private getContainerClassName = () => {
+        return this.props.selected ? "dice-roller_die-container selected" : "dice-roller_die-container";
     }
 
     private select = () => {
-        this.setState({
-            selected: !!this.state.selected,
-            containerClassName: this.state.selected ? "dice-roller_die-container selected" : "dice-roller_die-container",
-        });
+        this.props.onClick(this.props.idx);
     }
 }
 
