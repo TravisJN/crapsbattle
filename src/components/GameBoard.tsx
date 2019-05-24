@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import DiceRoller from './DiceRoller';
-import GameStateModel, { GAMESTATE } from '../data/GameStateModel';
+import { GAMESTATE } from '../data/GameStateModel';
 import DieModel from '../data/DieModel';
+import './GameBoard.css';
 
 interface Props {
     setRolledDice: (rolledDice: DieModel[])=>void;
     totalPoints: number;
     currentTurn: number;
     currentState: GAMESTATE;
+    reset: () => void;
  }
 
 interface State {
@@ -31,7 +33,11 @@ class GameBoard extends Component<Props, State> {
             <div className="game-board">
                 <p>Turn: {this.props.currentTurn}</p>
                 <p>Score: {this.props.totalPoints}</p>
-                <DiceRoller setRolledDice={this.props.setRolledDice} canRollDice={this.props.currentState === GAMESTATE.ROLLING} />
+                <DiceRoller
+                    setRolledDice={this.props.setRolledDice}
+                    canRollDice={this.props.currentState !== GAMESTATE.FIGHTING}
+                />
+                <button onClick={this.props.reset}>Reset</button>
             </div>
         )
     }

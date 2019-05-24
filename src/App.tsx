@@ -12,16 +12,17 @@ interface State {
 
 class App extends Component<Props, State> {
     private mGameModel: GameStateModel;
+    private static InitialState: State = {
+        currentScore: 0,
+        currentTurn: 1,
+    };
 
   constructor(props) {
     super(props);
 
     this.mGameModel = new GameStateModel();
 
-    this.state = {
-        currentScore: 0,
-        currentTurn: 1,
-    }
+    this.state = App.InitialState;
   }
 
   render() {
@@ -36,6 +37,7 @@ class App extends Component<Props, State> {
             totalPoints={this.state.currentScore}
             currentTurn={this.state.currentTurn}
             currentState={this.mGameModel.currentState}
+            reset={this.reset}
         />
         </div>
         <div className="player">
@@ -51,6 +53,11 @@ class App extends Component<Props, State> {
         currentScore: this.mGameModel.currentScore,
         currentTurn: this.mGameModel.turn,
     });
+  }
+
+  private reset = () => {
+      this.mGameModel = new GameStateModel();
+      this.setState(App.InitialState);
   }
 }
 
