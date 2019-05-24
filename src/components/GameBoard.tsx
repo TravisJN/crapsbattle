@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import DiceRoller from './DiceRoller';
-import GameStateModel from '../data/GameStateModel';
+import GameStateModel, { GAMESTATE } from '../data/GameStateModel';
 import DieModel from '../data/DieModel';
 
 interface Props {
-    gameModel: GameStateModel;
+    setRolledDice: (rolledDice: DieModel[])=>void;
+    totalPoints: number;
+    currentTurn: number;
+    currentState: GAMESTATE;
  }
 
 interface State {
     currentPlayer: number;
-    totalPoints: number;
-    diceHeld: number[];
-    rolledNums: DieModel[];
 }
 
 class GameBoard extends Component<Props, State> {
@@ -22,29 +22,18 @@ class GameBoard extends Component<Props, State> {
 
         this.state = {
             currentPlayer: 0,
-            totalPoints: 0,
-            diceHeld: [],
-            rolledNums: [],
         }
     }
 
     render() {
+        console.log(this.props.totalPoints);
         return (
             <div className="game-board">
-                <DiceRoller setRolledDice={this.setRolledDice} selectDie={this.selectDie} selectedDice={this.state.diceHeld} />
+                <p>Turn: {this.props.currentTurn}</p>
+                <p>Score: {this.props.totalPoints}</p>
+                <DiceRoller setRolledDice={this.props.setRolledDice} canRollDice={this.props.currentState === GAMESTATE.ROLLING} />
             </div>
         )
-    }
-
-    selectDie = (index: number) => {
-        let diceHeld = this.state.diceHeld;
-        console.log('number: ', this.state.rolledNums[index]);
-        this.setState({ diceHeld });
-    }
-
-    setRolledDice = (rolledNums: DieModel[]) => {
-        console.log(rolledNums);
-        //this.setState({ rolledNums });
     }
 }
 

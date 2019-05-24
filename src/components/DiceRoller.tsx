@@ -6,8 +6,7 @@ import DieModel from '../data/DieModel';
 
 interface Props {
     setRolledDice: (rolledNums:DieModel[])=>void;
-    selectDie: (index:number)=>void;
-    selectedDice: number[];
+    canRollDice: boolean;
 }
 
 interface State {
@@ -31,6 +30,7 @@ class DiceRoller extends Component<Props, State> {
     public render() {
         const { rolledNums } = this.state;
 
+
         return (
             <div className="dice-roller-container">
                 <div className="dice-roller__dice-row">
@@ -38,7 +38,7 @@ class DiceRoller extends Component<Props, State> {
                         return <Die num={die.number} idx={idx} selected={die.selected} onClick={this.onDieClicked} key={"die"+idx} />
                     })}
                 </div>
-                <button onClick={this.rollDice}>Roll</button>
+                <button onClick={this.rollDice} disabled={!this.props.canRollDice}>Roll</button>
                 <div className="dice-roller__num-dice-container">
                     <p className="dice-roller__num-dice-label">Number of dice: </p>
                     <input className="dice-roller__num-dice-input" type="text" value={this.state.numDice} onChange={this.updateNumDice} />
@@ -56,9 +56,11 @@ class DiceRoller extends Component<Props, State> {
 
                 return aDie;
             });
+
+            this.props.setRolledDice(rolledNums);
+
             return { rolledNums };
         });
-        this.props.setRolledDice(this.state.rolledNums);
     }
 
     private updateNumDice = (event: React.ChangeEvent<HTMLInputElement>) => {
