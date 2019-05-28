@@ -16,7 +16,7 @@ interface Props {
 
 interface State { }
 
-class Die extends Component<Props, State> {
+class DieComponent extends Component<Props, State> {
     private imageMap: { [n:number]: string } = {
         1: dice1,
         2: dice2,
@@ -43,4 +43,4 @@ class Die extends Component<Props, State> {
     }
 }
 
-export default Die;
+export default DieComponent;

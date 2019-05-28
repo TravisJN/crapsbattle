@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
-import GameStateModel from './data/GameStateModel';
-import DieModel from './data/DieModel';
+import GameStateModel, { GAMESTATE } from './data/GameStateModel';
+import Die from './data/DieModel';
 
 interface Props { }
 interface State {
-    currentScore: number;
-    currentTurn: number;
+  currentState: GAMESTATE;
+  rolledDice: Die[];
 }
 
 class App extends Component<Props, State> {
-    private mGameModel: GameStateModel;
-    private static InitialState: State = {
-        currentScore: 0,
-        currentTurn: 1,
-    };
+  private mGameModel: GameStateModel;
 
   constructor(props) {
     super(props);
 
     this.mGameModel = new GameStateModel();
 
-    this.state = App.InitialState;
+    this.state = {
+      currentState: this.mGameModel.currentState,
+      rolledDice: this.mGameModel.rolledDice,
+    };
   }
 
   render() {
@@ -33,11 +32,14 @@ class App extends Component<Props, State> {
         </div>
         <div className="board">
           <GameBoard
-            setRolledDice={this.setRolledDice}
-            totalPoints={this.state.currentScore}
-            currentTurn={this.state.currentTurn}
-            currentState={this.mGameModel.currentState}
+            rollDice={this.rollDice}
+            rolledDice={this.state.rolledDice}
+            totalPoints={this.mGameModel.points}
+            currentTurn={this.mGameModel.turn}
+            currentState={this.state.currentState}
+            selectDie={this.selectDie}
             reset={this.reset}
+            advance={this.advance}
         />
         </div>
         <div className="player">
@@ -47,17 +49,41 @@ class App extends Component<Props, State> {
     );
   }
 
-  private setRolledDice = (rolledDice: DieModel[]) => {
-    this.mGameModel.rolledDice = rolledDice;
+  private rollDice = () => {
+    this.mGameModel.rollDice();
     this.setState({
-        currentScore: this.mGameModel.currentScore,
-        currentTurn: this.mGameModel.turn,
+        currentState: this.mGameModel.currentState,
+        rolledDice: this.mGameModel.rolledDice,
+    });
+  }
+
+  private selectDie = (index: number) => {
+    this.mGameModel.rolledDice = this.mGameModel.rolledDice.map((aDie: Die, idx: number) => {
+      if (idx === index) {
+        aDie.selected = !aDie.selected;
+      }
+      return aDie;
+    });
+
+    this.setState({
+      rolledDice: this.mGameModel.rolledDice
+    });
+  }
+
+  private advance= () => {
+    this.mGameModel.advance();
+    this.setState({
+      currentState: this.mGameModel.currentState,
+      rolledDice: this.mGameModel.rolledDice,
     });
   }
 
   private reset = () => {
       this.mGameModel = new GameStateModel();
-      this.setState(App.InitialState);
+      this.setState({
+        currentState: this.mGameModel.currentState,
+        rolledDice: this.mGameModel.rolledDice,
+      });
   }
 }
 

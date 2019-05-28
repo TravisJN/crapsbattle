@@ -1,5 +1,5 @@
 
-export default class DieModel {
+export default class Die {
     private mNum: number;
     private mIndex: number;
     private mSelected: boolean = false;
