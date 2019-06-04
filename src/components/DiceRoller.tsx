@@ -3,6 +3,7 @@ import './diceRoller.css';
 import DieComponent from './DieComponent';
 import Die from '../data/DieModel';
 import { GAMESTATE } from '../data/GameStateModel';
+import Player from '../data/Player';
 
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
     currentState: GAMESTATE;
     dice: Die[];
     selectDie: (index: number) => void;
+    player: Player;
 }
 
 interface State {
@@ -33,7 +35,10 @@ class DiceRoller extends Component<Props, State> {
                         return <DieComponent num={die.number} idx={idx} selected={die.selected} onClick={this.onDieClicked} key={"die"+idx} />
                     })}
                 </div>
-                <button onClick={this.props.rollDice} disabled={!canRollDice}>Roll</button>
+                {   this.props.player.isHuman
+                    ? <button className="dice-roller__roll-button" onClick={this.props.rollDice} disabled={!canRollDice}>Roll</button>
+                    : null
+                }
             </div>
         )
     }

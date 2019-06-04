@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
 import GameStateModel, { GAMESTATE } from './data/GameStateModel';
+import Player from './data/Player';
 import Die from './data/DieModel';
 
 interface Props { }
 interface State {
   currentState: GAMESTATE;
-  rolledDice: Die[];
 }
 
 class App extends Component<Props, State> {
@@ -20,30 +20,39 @@ class App extends Component<Props, State> {
 
     this.state = {
       currentState: this.mGameModel.currentState,
-      rolledDice: this.mGameModel.rolledDice,
     };
   }
 
   render() {
+    const playerScore = this.mGameModel.players[0].currentScore;
+    const playerDice = this.mGameModel.players[0].rolledDice;
     return (
       <div className="App">
         <div className="enemy">
           enemy
+          <p>Turn: {this.mGameModel.turn}</p>
+          <p>Score: {this.mGameModel.players[1].currentScore}</p>
+          <p>hp: {this.mGameModel.players[1].hp}</p>
         </div>
-        <div className="board">
-          <GameBoard
-            rollDice={this.rollDice}
-            rolledDice={this.state.rolledDice}
-            totalPoints={this.mGameModel.points}
-            currentTurn={this.mGameModel.turn}
-            currentState={this.state.currentState}
-            selectDie={this.selectDie}
-            reset={this.reset}
-            advance={this.advance}
+        <GameBoard
+          rollDice={this.rollDice}
+          playerDice={playerDice}
+          playerScore={playerScore}
+          currentTurn={this.mGameModel.turn}
+          currentState={this.state.currentState}
+          selectDie={this.selectDie}
+          reset={this.reset}
+          advance={this.advance}
+          players={this.mGameModel.players}
         />
-        </div>
         <div className="player">
-          player
+          <p>Turn: {this.mGameModel.turn}</p>
+          <p>Score: {this.mGameModel.players[0].currentScore}</p>
+          <p>hp: {this.mGameModel.players[0].hp}</p>
+          { this.mGameModel.currentState === GAMESTATE.READY
+            ? <button className="start-reset-button" onClick={this.advance}>Start</button>
+            : <button className="start-reset-button" onClick={this.reset}>Reset</button>
+          }
         </div>
       </div>
     );
@@ -53,12 +62,13 @@ class App extends Component<Props, State> {
     this.mGameModel.rollDice();
     this.setState({
         currentState: this.mGameModel.currentState,
-        rolledDice: this.mGameModel.rolledDice,
     });
   }
 
   private selectDie = (index: number) => {
-    this.mGameModel.rolledDice = this.mGameModel.rolledDice.map((aDie: Die, idx: number) => {
+    const player: Player = this.mGameModel.players.find((player) => player.isHuman);
+
+    player.rolledDice = player.rolledDice.map((aDie: Die, idx: number) => {
       if (idx === index) {
         aDie.selected = !aDie.selected;
       }
@@ -66,7 +76,7 @@ class App extends Component<Props, State> {
     });
 
     this.setState({
-      rolledDice: this.mGameModel.rolledDice
+      currentState: this.mGameModel.currentState,
     });
   }
 
@@ -74,7 +84,6 @@ class App extends Component<Props, State> {
     this.mGameModel.advance();
     this.setState({
       currentState: this.mGameModel.currentState,
-      rolledDice: this.mGameModel.rolledDice,
     });
   }
 
@@ -82,7 +91,6 @@ class App extends Component<Props, State> {
       this.mGameModel = new GameStateModel();
       this.setState({
         currentState: this.mGameModel.currentState,
-        rolledDice: this.mGameModel.rolledDice,
       });
   }
 }

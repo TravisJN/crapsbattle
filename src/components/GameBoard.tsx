@@ -3,16 +3,18 @@ import DiceRoller from './DiceRoller';
 import { GAMESTATE } from '../data/GameStateModel';
 import Die from '../data/DieModel';
 import './GameBoard.css';
+import Player from '../data/Player';
 
 interface Props {
     rollDice: () => void;
-    rolledDice:  Die[];
-    totalPoints: number;
+    playerDice:  Die[];
+    playerScore: number;
     currentTurn: number;
     currentState: GAMESTATE;
     reset: () => void;
     advance: () => void;
     selectDie: (index: number) => void;
+    players: Player[];
  }
 
 interface State {
@@ -31,26 +33,27 @@ class GameBoard extends Component<Props, State> {
     }
 
     render() {
+        const player: Player = this.props.players.find(player => player.isHuman);
+        const enemy: Player = this.props.players.find(player => !player.isHuman)
+
         return (
             <div className="game-board">
-                <p>Turn: {this.props.currentTurn}</p>
-                <p>Score: {this.props.totalPoints}</p>
                 <DiceRoller
-                    dice={this.props.rolledDice}
+                    player={enemy}
+                    dice={enemy.rolledDice}
+                    rollDice={this.props.rollDice}
+                    currentState={this.props.currentState}
+                    selectDie={() => null}  // can't select enemy dice
+                />
+                <DiceRoller
+                    player={player}
+                    dice={player.rolledDice}
                     rollDice={this.props.rollDice}
                     currentState={this.props.currentState}
                     selectDie={this.props.selectDie}
                 />
-                { this.props.currentState === GAMESTATE.READY
-                ? <button onClick={this.onStartClicked.bind(this)}>Start</button>
-                : <button onClick={this.props.reset}>Reset</button>
-            }
             </div>
         )
-    }
-
-    private onStartClicked = () => {
-        this.props.advance();
     }
 }
 

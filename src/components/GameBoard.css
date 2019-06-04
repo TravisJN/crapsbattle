@@ -1,4 +1,8 @@
 .game-board {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    height: 250px;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
