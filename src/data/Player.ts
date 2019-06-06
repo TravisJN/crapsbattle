@@ -10,7 +10,6 @@ export default class Player {
     public isHuman: boolean;
     public hp: number;
     public maxHp: number;
-    //public currentScore: number = 0;
     public rolledDice: Die[] = this.setNewDice();
 
     private mPoints: number = 0;
@@ -41,7 +40,7 @@ export default class Player {
         });
     }
 
-    public get currentScore(): number {
+    public get score(): number {
         return this.rolledDice.reduce((sum: number, die: Die) => {
             return sum + die.number;
         }, 0);

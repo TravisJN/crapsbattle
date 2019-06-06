@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
-import GameStateModel, { GAMESTATE } from './data/GameStateModel';
+import GameStateModel, { GAMESTATE, WINNER } from './data/GameStateModel';
 import Player from './data/Player';
 import Die from './data/DieModel';
 
@@ -24,14 +24,14 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    const playerScore = this.mGameModel.players[0].currentScore;
+    const playerScore = this.mGameModel.players[0].score;
     const playerDice = this.mGameModel.players[0].rolledDice;
     return (
       <div className="App">
         <div className="enemy">
           enemy
           <p>Turn: {this.mGameModel.turn}</p>
-          <p>Score: {this.mGameModel.players[1].currentScore}</p>
+          <p>Score: {this.mGameModel.players[1].score}</p>
           <p>hp: {this.mGameModel.players[1].hp}</p>
         </div>
         <GameBoard
@@ -45,9 +45,10 @@ class App extends Component<Props, State> {
           advance={this.advance}
           players={this.mGameModel.players}
         />
+        { this.renderWinMessage() }
         <div className="player">
           <p>Turn: {this.mGameModel.turn}</p>
-          <p>Score: {this.mGameModel.players[0].currentScore}</p>
+          <p>Score: {this.mGameModel.players[0].score}</p>
           <p>hp: {this.mGameModel.players[0].hp}</p>
           { this.mGameModel.currentState === GAMESTATE.READY
             ? <button className="start-reset-button" onClick={this.advance}>Start</button>
@@ -92,6 +93,20 @@ class App extends Component<Props, State> {
       this.setState({
         currentState: this.mGameModel.currentState,
       });
+  }
+
+  private renderWinMessage() {
+    if (this.mGameModel.winner === WINNER.PLAYER) {
+      return (
+        <h1>You Win!</h1>
+      )
+    } else if (this.mGameModel.winner === WINNER.ENEMY) {
+      return (
+        <h1>You Lose!</h1>
+      )
+    } else {
+      return null;
+    }
   }
 }
 
