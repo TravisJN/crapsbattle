@@ -1,4 +1,5 @@
 import Player from "./Player";
+import Die from "./DieModel";
 
 export enum GAMESTATE {
     READY,
@@ -19,10 +20,11 @@ export default class GameStateModel {
 
     public currentState: GAMESTATE = GAMESTATE.READY;
     public winner: WINNER;
+    public lanes: number[] = [];
 
     private mPlayers: Player[] = [];
     private mPlayer: Player;
-    private mEnemey: Player;
+    private mEnemy: Player;
     private mTurn: number = 0;
 
     constructor() {
@@ -35,6 +37,14 @@ export default class GameStateModel {
 
     get turn() {
         return this.mTurn;
+    }
+
+    get human() {
+        return this.mPlayer;
+    }
+
+    get enemy() {
+        return this.mEnemy;
     }
 
     public advance = () => {
@@ -50,11 +60,15 @@ export default class GameStateModel {
                 } else {
                     this.mPlayers[0].rollDice();
                     this.mPlayers[1].rollDice();
-                    this.determineWinner();
                     this.currentState = GAMESTATE.FIGHTING;
                 }
                 break;
             case GAMESTATE.FIGHTING:
+                // compare lanes
+                // set the states of the game based on the output of a pure function
+                this.lanes = this.compareLanes();
+                //this.determineWinner();
+                console.log(this.lanes);
                 this.currentState = GAMESTATE.END;
                 break;
         }
@@ -62,6 +76,16 @@ export default class GameStateModel {
 
     public rollDice() {
         this.advance();
+    }
+
+    private compareLanes() {
+        // compare dice at each index and build an array of psitive or negative dmg
+        return Array.from({length: GameStateModel.NUM_DICE}, (e, index: number) => {
+            let player: Die = this.mPlayer.rolledDice[index];
+            let enemy: Die = this.mEnemy.rolledDice[index];
+
+            return player.number - enemy.number;
+        });
     }
 
     private resetTurn = () => {
@@ -82,7 +106,7 @@ export default class GameStateModel {
             if (isHuman) {
                 this.mPlayer = player;
             } else {
-                this.mEnemey = player;
+                this.mEnemy = player;
             }
 
             return player;
@@ -90,9 +114,9 @@ export default class GameStateModel {
     }
 
     private determineWinner = () => {
-        if (this.mPlayer.score > this.mEnemey.score) {
+        if (this.mPlayer.score > this.mEnemy.score) {
             this.winner = WINNER.PLAYER;
-        } else if (this.mPlayer.score === this.mEnemey.score) {
+        } else if (this.mPlayer.score === this.mEnemy.score) {
             this.winner = WINNER.NONE;
         } else {
             this.winner = WINNER.ENEMY;

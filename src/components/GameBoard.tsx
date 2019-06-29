@@ -4,6 +4,7 @@ import { GAMESTATE } from '../data/GameStateModel';
 import Die from '../data/DieModel';
 import './GameBoard.css';
 import Player from '../data/Player';
+import DamageDisplay from './DamageDisplay';
 
 interface Props {
     rollDice: () => void;
@@ -15,6 +16,7 @@ interface Props {
     advance: () => void;
     selectDie: (index: number) => void;
     players: Player[];
+    lanes: number[];
  }
 
 interface State {
@@ -45,12 +47,14 @@ class GameBoard extends Component<Props, State> {
                     currentState={this.props.currentState}
                     selectDie={() => null}  // can't select enemy dice
                 />
+                <DamageDisplay scores={this.props.lanes} />
                 <DiceRoller
                     player={player}
                     dice={player.rolledDice}
                     rollDice={this.props.rollDice}
                     currentState={this.props.currentState}
                     selectDie={this.props.selectDie}
+                    advance={this.props.advance}
                 />
             </div>
         )

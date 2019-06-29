@@ -4,6 +4,7 @@ import GameBoard from './components/GameBoard';
 import GameStateModel, { GAMESTATE, WINNER } from './data/GameStateModel';
 import Player from './data/Player';
 import Die from './data/DieModel';
+import PlayerInfo from './components/PlayerInfo';
 
 interface Props { }
 interface State {
@@ -24,16 +25,19 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    const playerScore = this.mGameModel.players[0].score;
-    const playerDice = this.mGameModel.players[0].rolledDice;
+    const playerScore = this.mGameModel.human.score;
+    const playerDice = this.mGameModel.human.rolledDice;
     return (
       <div className="App">
-        <div className="enemy">
-          enemy
-          <p>Turn: {this.mGameModel.turn}</p>
-          <p>Score: {this.mGameModel.players[1].score}</p>
-          <p>hp: {this.mGameModel.players[1].hp}</p>
-        </div>
+        <PlayerInfo
+          isHuman={false}
+          turn={this.mGameModel.turn}
+          score={this.mGameModel.enemy.score}
+          hp={this.mGameModel.enemy.hp}
+          currentState={this.mGameModel.currentState}
+          reset={this.reset}
+          advance={this.advance}
+        />
         <GameBoard
           rollDice={this.rollDice}
           playerDice={playerDice}
@@ -44,17 +48,18 @@ class App extends Component<Props, State> {
           reset={this.reset}
           advance={this.advance}
           players={this.mGameModel.players}
+          lanes={this.mGameModel.lanes}
         />
         { this.renderWinMessage() }
-        <div className="player">
-          <p>Turn: {this.mGameModel.turn}</p>
-          <p>Score: {this.mGameModel.players[0].score}</p>
-          <p>hp: {this.mGameModel.players[0].hp}</p>
-          { this.mGameModel.currentState === GAMESTATE.READY
-            ? <button className="start-reset-button" onClick={this.advance}>Start</button>
-            : <button className="start-reset-button" onClick={this.reset}>Reset</button>
-          }
-        </div>
+        <PlayerInfo
+          isHuman={true}
+          turn={this.mGameModel.turn}
+          score={this.mGameModel.human.score}
+          hp={this.mGameModel.human.hp}
+          currentState={this.mGameModel.currentState}
+          reset={this.reset}
+          advance={this.advance}
+        />
       </div>
     );
   }
@@ -81,7 +86,7 @@ class App extends Component<Props, State> {
     });
   }
 
-  private advance= () => {
+  private advance = () => {
     this.mGameModel.advance();
     this.setState({
       currentState: this.mGameModel.currentState,
@@ -98,7 +103,7 @@ class App extends Component<Props, State> {
   private renderWinMessage() {
     if (this.mGameModel.winner === WINNER.PLAYER) {
       return (
-        <h1>You Win!</h1>
+        <h1 className="win-message">You Win!</h1>
       )
     } else if (this.mGameModel.winner === WINNER.ENEMY) {
       return (

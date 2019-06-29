@@ -12,6 +12,7 @@ interface Props {
     dice: Die[];
     selectDie: (index: number) => void;
     player: Player;
+    advance?: ()=>void;
 }
 
 interface State {
@@ -26,8 +27,6 @@ class DiceRoller extends Component<Props, State> {
     };
 
     public render() {
-        const canRollDice: boolean = this.props.currentState === GAMESTATE.ROLLING;
-
         return (
             <div className="dice-roller-container">
                 <div className="dice-roller__dice-row">
@@ -35,10 +34,6 @@ class DiceRoller extends Component<Props, State> {
                         return <DieComponent num={die.number} idx={idx} selected={die.selected} onClick={this.onDieClicked} key={"die"+idx} />
                     })}
                 </div>
-                {   this.props.player.isHuman
-                    ? <button className="dice-roller__roll-button" onClick={this.props.rollDice} disabled={!canRollDice}>Roll</button>
-                    : null
-                }
             </div>
         )
     }
