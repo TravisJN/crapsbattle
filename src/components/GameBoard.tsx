@@ -4,7 +4,7 @@ import { GAMESTATE } from '../data/GameStateModel';
 import Die from '../data/DieModel';
 import './GameBoard.css';
 import Player from '../data/Player';
-import DamageDisplay from './DamageDisplay';
+import DamageDisplayPerLane from './DamageDisplayPerLane';
 
 interface Props {
     rollDice: () => void;
@@ -12,49 +12,37 @@ interface Props {
     playerScore: number;
     currentTurn: number;
     currentState: GAMESTATE;
-    reset: () => void;
     advance: () => void;
     selectDie: (index: number) => void;
     players: Player[];
     lanes: number[];
  }
 
-interface State {
-    currentPlayer: number;
-}
-
-class GameBoard extends Component<Props, State> {
-    public state: State;
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            currentPlayer: 0,
-        }
-    }
-
+class GameBoard extends Component<Props> {
     render() {
-        const player: Player = this.props.players.find(player => player.isHuman);
-        const enemy: Player = this.props.players.find(player => !player.isHuman)
+        const { currentState, players, rollDice, selectDie, lanes } = this.props;
+        const player: Player = players.find(player => player.isHuman);
+        const enemy: Player = players.find(player => !player.isHuman);
+        const showEnemyDice = currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME;
+        const playerDice = currentState !== GAMESTATE.READY ? player.rolledDice : [];
+        const enemyDice = showEnemyDice ? enemy.rolledDice : [];
 
         return (
             <div className="game-board">
                 <DiceRoller
                     player={enemy}
-                    dice={enemy.rolledDice}
-                    rollDice={this.props.rollDice}
-                    currentState={this.props.currentState}
+                    dice={enemyDice}
+                    rollDice={rollDice}
+                    currentState={currentState}
                     selectDie={() => null}  // can't select enemy dice
                 />
-                <DamageDisplay scores={this.props.lanes} />
+                <DamageDisplayPerLane scores={lanes} />
                 <DiceRoller
                     player={player}
-                    dice={player.rolledDice}
-                    rollDice={this.props.rollDice}
-                    currentState={this.props.currentState}
-                    selectDie={this.props.selectDie}
-                    advance={this.props.advance}
+                    dice={playerDice}
+                    rollDice={rollDice}
+                    currentState={currentState}
+                    selectDie={selectDie}
                 />
             </div>
         )

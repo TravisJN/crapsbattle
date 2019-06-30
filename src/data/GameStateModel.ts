@@ -5,13 +5,15 @@ export enum GAMESTATE {
     READY,
     ROLLING,
     FIGHTING,
-    END
+    ENDTURN,
+    ENDGAME
 }
 
 export enum WINNER {
     NONE,
     PLAYER,
-    ENEMY
+    ENEMY,
+    TIE
 }
 
 export default class GameStateModel {
@@ -19,13 +21,15 @@ export default class GameStateModel {
     private static MAX_TURNS: number = 3;
 
     public currentState: GAMESTATE = GAMESTATE.READY;
-    public winner: WINNER;
+    public winner: WINNER = WINNER.NONE;
     public lanes: number[] = [];
 
     private mPlayers: Player[] = [];
     private mPlayer: Player;
     private mEnemy: Player;
     private mTurn: number = 0;
+    private mPlayerDamage: number = 0;
+    private mEnemyDamage: number = 0;
 
     constructor() {
         this.mPlayers = this.initializePlayers();
@@ -47,29 +51,46 @@ export default class GameStateModel {
         return this.mEnemy;
     }
 
+    get playerDamage() {
+        return this.mPlayerDamage;
+    }
+
+    get enemyDamage() {
+        return this.mEnemyDamage;
+    }
+
     public advance = () => {
         switch(this.currentState) {
             case GAMESTATE.READY:
                 this.currentState = GAMESTATE.ROLLING;
-                this.resetTurn();
                 break;
             case GAMESTATE.ROLLING:
-                if (this.mTurn++ <= GameStateModel.MAX_TURNS) {
-                    this.mTurn++;
-                    this.mPlayers[0].rollDice();  // roll the player dice
+                if (++this.mTurn < GameStateModel.MAX_TURNS) {
+                    this.mPlayer.rollDice();  // roll the player dice
                 } else {
-                    this.mPlayers[0].rollDice();
-                    this.mPlayers[1].rollDice();
+                    this.mPlayer.rollDice();
+                    this.mEnemy.rollDice();
                     this.currentState = GAMESTATE.FIGHTING;
                 }
                 break;
             case GAMESTATE.FIGHTING:
                 // compare lanes
-                // set the states of the game based on the output of a pure function
-                this.lanes = this.compareLanes();
-                //this.determineWinner();
-                console.log(this.lanes);
-                this.currentState = GAMESTATE.END;
+                this.compareLanes();
+                this.applyDamage();
+                this.checkWin();
+                if (this.winner === WINNER.NONE) {
+                    this.currentState = GAMESTATE.ENDTURN;
+                } else {
+                    this.currentState = GAMESTATE.ENDGAME;
+                }
+                break;
+            case GAMESTATE.ENDTURN:
+                this.resetTurn();
+                this.currentState = GAMESTATE.READY;
+                break;
+            case GAMESTATE.ENDGAME:
+                // ENDGAME state should not be advanced from
+                // A new gamestatemodel should be created to start a new round
                 break;
         }
     }
@@ -80,17 +101,11 @@ export default class GameStateModel {
 
     private compareLanes() {
         // compare dice at each index and build an array of psitive or negative dmg
-        return Array.from({length: GameStateModel.NUM_DICE}, (e, index: number) => {
+        this.lanes = Array.from({length: GameStateModel.NUM_DICE}, (e, index: number) => {
             let player: Die = this.mPlayer.rolledDice[index];
             let enemy: Die = this.mEnemy.rolledDice[index];
 
             return player.number - enemy.number;
-        });
-    }
-
-    private resetTurn = () => {
-        this.mPlayers.forEach((player: Player) => {
-            player.setNewDice();
         });
     }
 
@@ -113,13 +128,42 @@ export default class GameStateModel {
         });
     }
 
-    private determineWinner = () => {
-        if (this.mPlayer.score > this.mEnemy.score) {
+    private applyDamage = () => {
+        this.lanes.forEach((aLane) => {
+            if (aLane > 0) {
+                this.mEnemyDamage += aLane;
+            } else if (aLane < 0) {
+                this.mPlayerDamage += Math.abs(aLane);
+            }
+        });
+
+        this.mEnemy.hp -= this.mEnemyDamage;
+        this.mPlayer.hp -= this.mPlayerDamage;
+    }
+
+    private checkWin = () => {
+        if (this.mPlayer.hp <= 0) {
+            if (this.mEnemy.hp <= 0) {
+                // both players died on the same turn
+                this.winner = WINNER.TIE;
+            } else {
+                this.winner = WINNER.ENEMY;
+            }
+        } else if (this.mEnemy.hp <= 0) {
             this.winner = WINNER.PLAYER;
-        } else if (this.mPlayer.score === this.mEnemy.score) {
-            this.winner = WINNER.NONE;
-        } else {
-            this.winner = WINNER.ENEMY;
         }
+    }
+
+    private resetTurn = () => {
+        this.mPlayers.forEach((player: Player) => {
+            player.rolledDice = player.setNewDice();
+        });
+
+        this.mPlayerDamage =
+        this.mEnemyDamage = 0;
+
+        this.mTurn = 0;
+
+        this.lanes = [];
     }
 }

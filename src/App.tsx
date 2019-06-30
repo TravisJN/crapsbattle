@@ -5,10 +5,13 @@ import GameStateModel, { GAMESTATE, WINNER } from './data/GameStateModel';
 import Player from './data/Player';
 import Die from './data/DieModel';
 import PlayerInfo from './components/PlayerInfo';
+import DamageDisplayTotal from './components/DamageDisplayTotal';
+import ReactModel from 'react-modal';
 
 interface Props { }
 interface State {
   currentState: GAMESTATE;
+  showModal: boolean;
 }
 
 class App extends Component<Props, State> {
@@ -21,12 +24,16 @@ class App extends Component<Props, State> {
 
     this.state = {
       currentState: this.mGameModel.currentState,
+      showModal: false,
     };
   }
 
   render() {
-    const playerScore = this.mGameModel.human.score;
-    const playerDice = this.mGameModel.human.rolledDice;
+    const { human, enemyDamage, playerDamage, currentState } = this.mGameModel
+    const playerScore = human.score;
+    const playerDice = human.rolledDice;
+    const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
+
     return (
       <div className="App">
         <PlayerInfo
@@ -38,6 +45,14 @@ class App extends Component<Props, State> {
           reset={this.reset}
           advance={this.advance}
         />
+
+        <div className="damage-display-total__container">
+          { showDamage
+            ? <DamageDisplayTotal damage={enemyDamage} />
+            : null
+          }
+        </div>
+
         <GameBoard
           rollDice={this.rollDice}
           playerDice={playerDice}
@@ -45,12 +60,18 @@ class App extends Component<Props, State> {
           currentTurn={this.mGameModel.turn}
           currentState={this.state.currentState}
           selectDie={this.selectDie}
-          reset={this.reset}
           advance={this.advance}
           players={this.mGameModel.players}
           lanes={this.mGameModel.lanes}
         />
-        { this.renderWinMessage() }
+
+        <div className="damage-display-total__container">
+          { showDamage
+            ? <DamageDisplayTotal damage={playerDamage} />
+            : null
+          }
+        </div>
+
         <PlayerInfo
           isHuman={true}
           turn={this.mGameModel.turn}
@@ -60,6 +81,18 @@ class App extends Component<Props, State> {
           reset={this.reset}
           advance={this.advance}
         />
+
+        <ReactModel
+          className="win-modal"
+          isOpen={this.state.showModal}
+          shouldCloseOnOverlayClick={true}
+          onRequestClose={this.handleCloseModal}
+          shouldFocusAfterRender={false}
+          ariaHideApp={false}
+        >
+          <h1>{this.getWinMessage()}</h1>
+        </ReactModel>
+        { /*this.renderWinMessage()*/ }
       </div>
     );
   }
@@ -87,10 +120,17 @@ class App extends Component<Props, State> {
   }
 
   private advance = () => {
-    this.mGameModel.advance();
-    this.setState({
-      currentState: this.mGameModel.currentState,
-    });
+    let showModal: boolean = false;
+    if (this.mGameModel.currentState === GAMESTATE.ENDGAME) {
+      this.reset();
+    } else {
+      this.mGameModel.advance();
+      showModal = this.mGameModel.winner !== WINNER.NONE;
+      this.setState({
+        currentState: this.mGameModel.currentState,
+        showModal,
+      });
+    }
   }
 
   private reset = () => {
@@ -100,18 +140,18 @@ class App extends Component<Props, State> {
       });
   }
 
-  private renderWinMessage() {
+  private getWinMessage() {
     if (this.mGameModel.winner === WINNER.PLAYER) {
-      return (
-        <h1 className="win-message">You Win!</h1>
-      )
+      return "You Win!";
     } else if (this.mGameModel.winner === WINNER.ENEMY) {
-      return (
-        <h1>You Lose!</h1>
-      )
+      return "You Lose!"
     } else {
-      return null;
+      return "Tie!";
     }
+  }
+
+  private handleCloseModal = () => {
+    this.setState({showModal: false});
   }
 }
 

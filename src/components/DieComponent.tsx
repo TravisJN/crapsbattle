@@ -27,9 +27,11 @@ class DieComponent extends Component<Props, State> {
     };
 
     public render = () => {
+        const { idx, num } = this.props;
+
         return (
-            <div className={this.getContainerClassName()} key={this.props.idx} onClick={this.select}>
-                <img src={this.imageMap[this.props.num]} width="60" height="60" />
+            <div className={this.getContainerClassName()} key={idx} onClick={this.select}>
+                <img src={this.imageMap[num]} width="60" height="60" />
             </div>
         )
     }

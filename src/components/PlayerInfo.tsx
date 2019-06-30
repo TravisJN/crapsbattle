@@ -37,17 +37,24 @@ export default class PlayerInfo extends Component<Props> {
 
     private renderButton = () => {
         const { currentState } = this.props;
+        let buttonText: string;
 
         switch(currentState) {
             case GAMESTATE.READY:
-                return <button className="start-reset-button" onClick={this.props.advance}>Start</button>
+                buttonText = "Start";
+                break;
             case GAMESTATE.ROLLING:
-                return <button className="start-reset-button" onClick={this.props.advance}>Roll</button>
+                buttonText = "Roll";
+                break;
             case GAMESTATE.FIGHTING:
-                return <button className="start-reset-button" onClick={this.props.advance}>Fight</button>
-            case GAMESTATE.END:
+                buttonText = "Fight";
+                break;
+            case GAMESTATE.ENDTURN:
             default:
-                return <button className="start-reset-button" onClick={this.props.reset}>Reset</button>
+                buttonText = "Reset";
+                break;
         }
+
+        return <button className="start-reset-button" onClick={this.props.advance}>{buttonText}</button>
     }
 }

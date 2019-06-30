@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import './DamageDisplay.css';
+import './DamageDisplayPerLane.css';
 import GameStateModel from '../data/GameStateModel'; // This is the class, not an instance
 
 interface Props {
     scores: number[];
 }
 
-class DamageDisplay extends Component<Props>{
+class DamageDisplayPerLane extends Component<Props>{
     render() {
         return (
-            <div className="damage-display__container">
+            <div className="damage-display-lane__container">
                 { Array.from({length: GameStateModel.NUM_DICE}, (e, i) => {
                     return (
-                        <div className="damage-display__column" key={"dmg-col" + i}>
+                        <div className="damage-display-lane__column" key={"dmg-col" + i}>
                             {this.props.scores[i]}
                         </div>
                     );
@@ -22,4 +22,4 @@ class DamageDisplay extends Component<Props>{
     }
 }
 
-export default DamageDisplay;
+export default DamageDisplayPerLane;
