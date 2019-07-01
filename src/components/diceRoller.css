@@ -20,3 +20,10 @@
     height: 30px;
     align-self: center;
 }
+
+.dice-roller__enemy-text {
+    align-self: center;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18pt;
+}

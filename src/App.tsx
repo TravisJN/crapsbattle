@@ -6,7 +6,7 @@ import Player from './data/Player';
 import Die from './data/DieModel';
 import PlayerInfo from './components/PlayerInfo';
 import DamageDisplayTotal from './components/DamageDisplayTotal';
-import ReactModel from 'react-modal';
+import ReactModal from 'react-modal';
 
 interface Props { }
 interface State {
@@ -82,7 +82,7 @@ class App extends Component<Props, State> {
           advance={this.advance}
         />
 
-        <ReactModel
+        <ReactModal
           className="win-modal"
           isOpen={this.state.showModal}
           shouldCloseOnOverlayClick={true}
@@ -91,8 +91,7 @@ class App extends Component<Props, State> {
           ariaHideApp={false}
         >
           <h1>{this.getWinMessage()}</h1>
-        </ReactModel>
-        { /*this.renderWinMessage()*/ }
+        </ReactModal>
       </div>
     );
   }
@@ -154,6 +153,5 @@ class App extends Component<Props, State> {
     this.setState({showModal: false});
   }
 }
-
 
 export default App;

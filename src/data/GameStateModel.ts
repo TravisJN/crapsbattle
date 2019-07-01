@@ -63,6 +63,8 @@ export default class GameStateModel {
         switch(this.currentState) {
             case GAMESTATE.READY:
                 this.currentState = GAMESTATE.ROLLING;
+                this.mPlayer.rollDice();
+                this.mTurn++;
                 break;
             case GAMESTATE.ROLLING:
                 if (++this.mTurn < GameStateModel.MAX_TURNS) {
@@ -91,6 +93,7 @@ export default class GameStateModel {
             case GAMESTATE.ENDGAME:
                 // ENDGAME state should not be advanced from
                 // A new gamestatemodel should be created to start a new round
+                console.error("Cannot advance from ENDGAME state!");
                 break;
         }
     }
