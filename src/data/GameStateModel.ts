@@ -1,5 +1,6 @@
 import Player from "./Player";
 import Die from "./DieModel";
+import {Connection} from './ConnectionController';
 
 export enum GAMESTATE {
     READY,
@@ -18,7 +19,7 @@ export enum WINNER {
 
 export default class GameStateModel {
     public static NUM_DICE: number = 4;
-    private static MAX_TURNS: number = 3;
+    private static NUM_TURNS: number = 3;
 
     public currentState: GAMESTATE = GAMESTATE.READY;
     public winner: WINNER = WINNER.NONE;
@@ -31,8 +32,12 @@ export default class GameStateModel {
     private mPlayerDamage: number = 0;
     private mEnemyDamage: number = 0;
 
+    public socketConnection;
+
     constructor() {
         this.mPlayers = this.initializePlayers();
+
+        this.socketConnection = new Connection();
     }
 
     get players() {
@@ -67,7 +72,7 @@ export default class GameStateModel {
                 this.mTurn++;
                 break;
             case GAMESTATE.ROLLING:
-                if (++this.mTurn < GameStateModel.MAX_TURNS) {
+                if (++this.mTurn < GameStateModel.NUM_TURNS) {
                     this.mPlayer.rollDice();  // roll the player dice
                 } else {
                     this.mPlayer.rollDice();
@@ -96,6 +101,12 @@ export default class GameStateModel {
                 console.error("Cannot advance from ENDGAME state!");
                 break;
         }
+
+        this.advanceServer();
+    }
+
+    private advanceServer() {
+        this.socketConnection
     }
 
     public rollDice() {

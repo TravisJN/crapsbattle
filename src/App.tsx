@@ -6,12 +6,12 @@ import Player from './data/Player';
 import Die from './data/DieModel';
 import PlayerInfo from './components/PlayerInfo';
 import DamageDisplayTotal from './components/DamageDisplayTotal';
-import ReactModal from 'react-modal';
 
 interface Props { }
 interface State {
   currentState: GAMESTATE;
   showModal: boolean;
+  isConnected: boolean;
 }
 
 class App extends Component<Props, State> {
@@ -25,6 +25,7 @@ class App extends Component<Props, State> {
     this.state = {
       currentState: this.mGameModel.currentState,
       showModal: false,
+      isConnected: false,
     };
   }
 
@@ -33,6 +34,8 @@ class App extends Component<Props, State> {
     const playerScore = human.score;
     const playerDice = human.rolledDice;
     const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
+
+    const { isConnected } = this.state;
 
     return (
       <div className="App">
@@ -65,12 +68,20 @@ class App extends Component<Props, State> {
           lanes={this.mGameModel.lanes}
         />
 
+        {
+          isConnected
+          ? null
+          : <button className="join-game-button" onClick={this.onConnectClick}>Join game</button>
+        }
+
         <div className="damage-display-total__container">
           { showDamage
             ? <DamageDisplayTotal damage={playerDamage} />
             : null
           }
         </div>
+
+        <h1 className="win-message">{this.getWinMessage()}</h1>
 
         <PlayerInfo
           isHuman={true}
@@ -82,16 +93,6 @@ class App extends Component<Props, State> {
           advance={this.advance}
         />
 
-        <ReactModal
-          className="win-modal"
-          isOpen={this.state.showModal}
-          shouldCloseOnOverlayClick={true}
-          onRequestClose={this.handleCloseModal}
-          shouldFocusAfterRender={false}
-          ariaHideApp={false}
-        >
-          <h1>{this.getWinMessage()}</h1>
-        </ReactModal>
       </div>
     );
   }
@@ -140,17 +141,19 @@ class App extends Component<Props, State> {
   }
 
   private getWinMessage() {
-    if (this.mGameModel.winner === WINNER.PLAYER) {
-      return "You Win!";
-    } else if (this.mGameModel.winner === WINNER.ENEMY) {
-      return "You Lose!"
-    } else {
-      return "Tie!";
+    if (this.state.currentState === GAMESTATE.ENDGAME) {
+      if (this.mGameModel.winner === WINNER.PLAYER) {
+        return "You Win!";
+      } else if (this.mGameModel.winner === WINNER.ENEMY) {
+        return "You Lose!"
+      } else {
+        return "Tie!";
+      }
     }
   }
 
-  private handleCloseModal = () => {
-    this.setState({showModal: false});
+  private onConnectClick = () => {
+    this.mGameModel.socketConnection.joinGame().then(() => this.setState({isConnected: true}));
   }
 }
 
