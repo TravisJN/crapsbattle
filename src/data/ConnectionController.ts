@@ -1,5 +1,7 @@
 import io from 'socket.io-client';
-const connection = io('http://localhost:8080');
+import { GAMESTATE } from './GameStateModel';
+import Die from './DieModel';
+//const connection = io('http://localhost:8080');
 
 export class Connection {
   private static url = 'ws://localhost:8080';
@@ -7,24 +9,30 @@ export class Connection {
   private mPromise;
   private mResolve;
 
+  public connection = io('http://localhost:8080');
+
   constructor() {
-    connection.on('connect', () => {
-      console.log('connection to server established');
+
+    this.connection.on('connect', () => {
+      console.log('this.connection to server established');
     });
 
-    connection.on('disconnect', () => {
-      console.log('disconnect: connection no longer connected');
+    this.connection.on('disconnect', () => {
+      console.log('disconnect: this.connection no longer connected');
       this.mIsConnected = false;
     });
 
-    connection.on('joined', (data) => {
+    this.connection.on('joined', (data) => {
       console.log('Successfully joined a game!');
       this.mIsConnected = true;
-      console.log(this.mPromise);
-      this.mPromise.then();
+      this.mResolve();
     });
 
-    connection.on('ready', () => {
+    this.connection.on('ready', () => {
+      console.log('ready received. both players have joined the game');
+    });
+
+    this.connection.on('fight', (enemyDice: Die[]) => {
 
     });
   }
@@ -39,9 +47,13 @@ export class Connection {
 
     this.mPromise = new Promise((resolve, reject) => {
       this.mResolve = resolve;
-      connection.emit('join', 'travis');
+      this.connection.emit('join', 'travis');
     });
 
     return this.mPromise;
+  }
+
+  public advance(currentState: GAMESTATE, payload?: Die[]) {
+    this.connection.emit('advance', { state: GAMESTATE[currentState], payload });
   }
 }

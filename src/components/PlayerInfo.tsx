@@ -58,6 +58,6 @@ export default class PlayerInfo extends Component<Props> {
           break;
       }
 
-      return <button className="start-reset-button" onClick={this.props.advance}>{buttonText}</button>
+      return <button className="start-reset-button" onClick={this.props.advance} disabled={currentState === GAMESTATE.WAITING_TO_FIGHT}>{buttonText}</button>
     }
 }

@@ -1,20 +1,12 @@
 
 export default class Die {
-    private mNum: number;
+    public number: number;
     private mIndex: number;
     private mSelected: boolean = false;
 
     constructor(startingNum: number, index: number) {
-        this.mNum = startingNum;
+        this.number = startingNum;
         this.mIndex = index;
-    }
-
-    get number(): number {
-        return this.mNum;
-    }
-
-    set number(newNum: number) {
-        this.mNum = newNum;
     }
 
     get index(): number {

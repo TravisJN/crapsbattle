@@ -5,6 +5,7 @@ import {Connection} from './ConnectionController';
 export enum GAMESTATE {
     READY,
     ROLLING,
+    WAITING_TO_FIGHT,
     FIGHTING,
     ENDTURN,
     ENDGAME
@@ -24,6 +25,7 @@ export default class GameStateModel {
     public currentState: GAMESTATE = GAMESTATE.READY;
     public winner: WINNER = WINNER.NONE;
     public lanes: number[] = [];
+    public isMultiplayer: boolean = true;
 
     private mPlayers: Player[] = [];
     private mPlayer: Player;
@@ -33,11 +35,27 @@ export default class GameStateModel {
     private mEnemyDamage: number = 0;
 
     public socketConnection;
+    public onFight;
 
     constructor() {
         this.mPlayers = this.initializePlayers();
 
+        if (this.isMultiplayer) {
+            this.initSocketConnection();
+        }
+    }
+
+    private initSocketConnection() {
         this.socketConnection = new Connection();
+
+        this.socketConnection.connection.on('fight', (enemyDice: Die[]) => {
+            console.log('fight received... enemyDice: ', enemyDice);
+            this.mEnemy.rolledDice = enemyDice;
+            this.advance();
+            if (this.onFight) {
+                this.onFight();
+            }
+        });
     }
 
     get players() {
@@ -76,9 +94,17 @@ export default class GameStateModel {
                     this.mPlayer.rollDice();  // roll the player dice
                 } else {
                     this.mPlayer.rollDice();
-                    this.mEnemy.rollDice();
-                    this.currentState = GAMESTATE.FIGHTING;
+                    if (!this.isMultiplayer) {
+                        this.mEnemy.rollDice();
+                    }
+                    this.currentState = this.isMultiplayer ? GAMESTATE.WAITING_TO_FIGHT : GAMESTATE.FIGHTING;
                 }
+                break;
+            case GAMESTATE.WAITING_TO_FIGHT:
+                // This case is a multiplayer only case
+                // If we are currently waiting to fight and have received
+                // an advance it means the other player is ready to battle
+                this.currentState = GAMESTATE.FIGHTING;
                 break;
             case GAMESTATE.FIGHTING:
                 // compare lanes
@@ -102,11 +128,18 @@ export default class GameStateModel {
                 break;
         }
 
-        this.advanceServer();
+        if (this.isMultiplayer) {
+            this.advanceServer();
+        }
     }
 
     private advanceServer() {
-        this.socketConnection
+        let payload;
+        if (this.currentState === GAMESTATE.WAITING_TO_FIGHT) {
+            payload = this.mPlayer.rolledDice;
+        }
+
+        this.socketConnection.advance(this.currentState, payload);
     }
 
     public rollDice() {

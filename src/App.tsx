@@ -21,7 +21,7 @@ class App extends Component<Props, State> {
     super(props);
 
     this.mGameModel = new GameStateModel();
-
+    this.mGameModel.onFight = this.onUpdateState.bind(this);
     this.state = {
       currentState: this.mGameModel.currentState,
       showModal: false,
@@ -71,7 +71,7 @@ class App extends Component<Props, State> {
         {
           isConnected
           ? null
-          : <button className="join-game-button" onClick={this.onConnectClick}>Join game</button>
+          : <button className="join-game-button" onClick={this.onJoinGameClick}>Join game</button>
         }
 
         <div className="damage-display-total__container">
@@ -152,8 +152,12 @@ class App extends Component<Props, State> {
     }
   }
 
-  private onConnectClick = () => {
+  private onJoinGameClick = () => {
     this.mGameModel.socketConnection.joinGame().then(() => this.setState({isConnected: true}));
+  }
+
+  private onUpdateState() {
+    this.setState({currentState: this.mGameModel.currentState});
   }
 }
 
