@@ -25,7 +25,7 @@ export default class GameStateModel {
     public currentState: GAMESTATE = GAMESTATE.READY;
     public winner: WINNER = WINNER.NONE;
     public lanes: number[] = [];
-    public isMultiplayer: boolean = true;
+    public isMultiplayer: boolean = false;
 
     private mPlayers: Player[] = [];
     private mPlayer: Player;

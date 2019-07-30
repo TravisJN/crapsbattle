@@ -30,9 +30,10 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    const { human, enemyDamage, playerDamage, currentState } = this.mGameModel
+    const { human, enemyDamage, playerDamage, currentState, isMultiplayer } = this.mGameModel
     const playerScore = human.score;
     const playerDice = human.rolledDice;
+    const isEndOfGame = currentState === GAMESTATE.ENDGAME;
     const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
 
     const { isConnected } = this.state;
@@ -69,7 +70,7 @@ class App extends Component<Props, State> {
         />
 
         {
-          isConnected
+          !isMultiplayer || isConnected
           ? null
           : <button className="join-game-button" onClick={this.onJoinGameClick}>Join game</button>
         }
@@ -79,9 +80,12 @@ class App extends Component<Props, State> {
             ? <DamageDisplayTotal damage={playerDamage} />
             : null
           }
+          { isEndOfGame
+            ? <h1 className="win-message">{this.getWinMessage()}</h1>
+            : null
+          }
         </div>
 
-        <h1 className="win-message">{this.getWinMessage()}</h1>
 
         <PlayerInfo
           isHuman={true}
