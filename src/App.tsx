@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
-import GameStateModel, { GAMESTATE, WINNER } from './data/GameStateModel';
+import GameStateModel, { GAMESTATE, WINNER, GAMETYPE } from './data/GameStateModel';
 import Player from './data/Player';
 import Die from './data/DieModel';
 import PlayerInfo from './components/PlayerInfo';
 import DamageDisplayTotal from './components/DamageDisplayTotal';
+import { Popover, Pane, Text, Button, Position, Heading, Spinner } from 'evergreen-ui';
 
 interface Props { }
 interface State {
@@ -22,6 +23,7 @@ class App extends Component<Props, State> {
 
     this.mGameModel = new GameStateModel();
     this.mGameModel.onFight = this.onUpdateState.bind(this);
+    this.mGameModel.forceUpdate = this.forceUpdate.bind(this);
     this.state = {
       currentState: this.mGameModel.currentState,
       showModal: false,
@@ -35,6 +37,7 @@ class App extends Component<Props, State> {
     const playerDice = human.rolledDice;
     const isEndOfGame = currentState === GAMESTATE.ENDGAME;
     const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
+    const isStartofNewGame = currentState === GAMESTATE.STARTGAME || currentState === GAMESTATE.CONNECTING;
 
     const { isConnected } = this.state;
 
@@ -57,6 +60,28 @@ class App extends Component<Props, State> {
           }
         </div>
 
+        <Popover
+          content={
+            <Pane
+              width={340}
+              height={340}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexDirection="column"
+            >
+              {this.renderStartGamePopover()}
+            </Pane>
+          }
+          position={Position.TOP}
+          isShown={isStartofNewGame}
+        >
+          <Pane
+            width={0}
+            alignSelf="center"
+          />
+        </Popover>
+
         <GameBoard
           rollDice={this.rollDice}
           playerDice={playerDice}
@@ -68,12 +93,6 @@ class App extends Component<Props, State> {
           players={this.mGameModel.players}
           lanes={this.mGameModel.lanes}
         />
-
-        {
-          !isMultiplayer || isConnected
-          ? null
-          : <button className="join-game-button" onClick={this.onJoinGameClick}>Join game</button>
-        }
 
         <div className="damage-display-total__container">
           { showDamage
@@ -99,6 +118,61 @@ class App extends Component<Props, State> {
 
       </div>
     );
+  }
+
+  private renderStartGamePopover = () => {
+    const { currentState } = this.mGameModel;
+
+    if (currentState  === GAMESTATE.CONNECTING) {
+      return  (
+        <Pane
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
+          alignItems="center"
+          height={340}
+        >
+          <Spinner />
+        </Pane>
+      )
+    } else if (currentState === GAMESTATE.STARTGAME) {
+      return (
+        <Pane
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
+          alignItems="center"
+          height={340}
+        >
+          <Heading size={900} marginY={25}>Craps Battle!</Heading>
+          <div className="new-game-separator" />
+          <Text size={500} marginY={50}>Start a New Game</Text>
+          <Pane
+            height={120}
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-evenly"
+          >
+            <Button
+              onClick={() => {
+                this.reset(GAMETYPE.SINGLEPLAYER);
+                this.advance();
+              }}
+            >
+              New Single Player Game
+            </Button>
+            <Button
+              onClick={() => {
+                this.reset(GAMETYPE.MULTIPLAYER);
+                this.advance();
+              }}
+            >
+              New Multiplayer Game
+            </Button>
+          </Pane>
+        </Pane>
+      )
+    }
   }
 
   private rollDice = () => {
@@ -137,8 +211,10 @@ class App extends Component<Props, State> {
     }
   }
 
-  private reset = () => {
-      this.mGameModel = new GameStateModel();
+  private reset = (gameType: GAMETYPE = GAMETYPE.SINGLEPLAYER) => {
+      this.mGameModel = new GameStateModel(gameType);
+      this.mGameModel.onFight = this.onUpdateState.bind(this);
+      this.mGameModel.forceUpdate = this.forceUpdate.bind(this);
       this.setState({
         currentState: this.mGameModel.currentState,
       });

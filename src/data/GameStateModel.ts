@@ -1,8 +1,11 @@
 import Player from "./Player";
 import Die from "./DieModel";
 import {Connection} from './ConnectionController';
+import { threadId } from "worker_threads";
 
 export enum GAMESTATE {
+    STARTGAME,
+    CONNECTING,
     READY,
     ROLLING,
     WAITING_TO_FIGHT,
@@ -18,14 +21,20 @@ export enum WINNER {
     TIE
 }
 
+export enum GAMETYPE {
+    SINGLEPLAYER,
+    MULTIPLAYER
+}
+
 export default class GameStateModel {
     public static NUM_DICE: number = 4;
     private static NUM_TURNS: number = 3;
 
-    public currentState: GAMESTATE = GAMESTATE.READY;
+    public currentState: GAMESTATE = GAMESTATE.STARTGAME;
     public winner: WINNER = WINNER.NONE;
     public lanes: number[] = [];
     public isMultiplayer: boolean = false;
+    public forceUpdate: () => void;
 
     private mPlayers: Player[] = [];
     private mPlayer: Player;
@@ -37,10 +46,10 @@ export default class GameStateModel {
     public socketConnection;
     public onFight;
 
-    constructor() {
+    constructor(gameType?: GAMETYPE) {
         this.mPlayers = this.initializePlayers();
 
-        if (this.isMultiplayer) {
+        if (this.isMultiplayer = gameType === GAMETYPE.MULTIPLAYER) {
             this.initSocketConnection();
         }
     }
@@ -84,6 +93,20 @@ export default class GameStateModel {
 
     public advance = () => {
         switch(this.currentState) {
+            case GAMESTATE.STARTGAME:
+                if (this.isMultiplayer) {
+                    this.currentState = GAMESTATE.CONNECTING;
+                    this.socketConnection.joinGame().then(() => {
+                        this.advance();
+                    });
+                } else {
+                    this.currentState = GAMESTATE.READY;
+                }
+                break;
+            case GAMESTATE.CONNECTING:
+                this.currentState = GAMESTATE.READY;
+                this.forceUpdate();
+                break;
             case GAMESTATE.READY:
                 this.currentState = GAMESTATE.ROLLING;
                 this.mPlayer.rollDice();
