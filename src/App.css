@@ -56,3 +56,9 @@
   height: 75px;
   align-self: center;
 }
+
+.new-game-separator {
+  height: 2px;
+  width: 200%;
+  border-bottom: 1px solid grey;
+}

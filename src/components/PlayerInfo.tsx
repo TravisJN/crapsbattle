@@ -37,9 +37,11 @@ export default class PlayerInfo extends Component<Props> {
 
     private renderButton = () => {
       const { currentState } = this.props;
+      const isDisabled = currentState === GAMESTATE.WAITING_TO_FIGHT || currentState === GAMESTATE.STARTGAME || currentState === GAMESTATE.CONNECTING;
       let buttonText: string;
 
       switch(currentState) {
+        case GAMESTATE.STARTGAME:
         case GAMESTATE.READY:
           buttonText = "Start";
           break;
@@ -58,6 +60,6 @@ export default class PlayerInfo extends Component<Props> {
           break;
       }
 
-      return <button className="start-reset-button" onClick={this.props.advance} disabled={currentState === GAMESTATE.WAITING_TO_FIGHT}>{buttonText}</button>
+      return <button className="start-reset-button" onClick={this.props.advance} disabled={isDisabled}>{buttonText}</button>
     }
 }
