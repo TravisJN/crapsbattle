@@ -33,7 +33,6 @@ class App extends Component<Props, State> {
 
   render() {
     const { human, enemyDamage, playerDamage, currentState, isMultiplayer } = this.mGameModel
-    const playerScore = human.score;
     const playerDice = human.rolledDice;
     const isEndOfGame = currentState === GAMESTATE.ENDGAME;
     const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
@@ -46,7 +45,6 @@ class App extends Component<Props, State> {
         <PlayerInfo
           isHuman={false}
           turn={this.mGameModel.turn}
-          score={this.mGameModel.enemy.score}
           hp={this.mGameModel.enemy.hp}
           currentState={this.mGameModel.currentState}
           reset={this.reset}
@@ -85,7 +83,6 @@ class App extends Component<Props, State> {
         <GameBoard
           rollDice={this.rollDice}
           playerDice={playerDice}
-          playerScore={playerScore}
           currentTurn={this.mGameModel.turn}
           currentState={this.state.currentState}
           selectDie={this.selectDie}
@@ -109,7 +106,6 @@ class App extends Component<Props, State> {
         <PlayerInfo
           isHuman={true}
           turn={this.mGameModel.turn}
-          score={this.mGameModel.human.score}
           hp={this.mGameModel.human.hp}
           currentState={this.mGameModel.currentState}
           reset={this.reset}

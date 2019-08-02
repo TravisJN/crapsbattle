@@ -3,7 +3,6 @@ import { GAMESTATE } from '../data/GameStateModel';
 
 interface Props {
   turn: number;
-  score: number;
   hp: number;
   currentState: GAMESTATE;
   reset: ()=>void;
@@ -18,7 +17,6 @@ export default class PlayerInfo extends Component<Props> {
       return (
         <div className="player">
           <p>Turn: {this.props.turn}</p>
-          <p>Score: {this.props.score}</p>
           <p>hp: {this.props.hp}</p>
 
           { this.renderButton() }
@@ -28,7 +26,6 @@ export default class PlayerInfo extends Component<Props> {
         return (
           <div className="player">
             <p>Enemy</p>
-            <p>Score: {this.props.score}</p>
             <p>hp: {this.props.hp}</p>
           </div>
         )

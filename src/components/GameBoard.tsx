@@ -9,7 +9,6 @@ import DamageDisplayPerLane from './DamageDisplayPerLane';
 interface Props {
     rollDice: () => void;
     playerDice:  Die[];
-    playerScore: number;
     currentTurn: number;
     currentState: GAMESTATE;
     advance: () => void;
@@ -24,7 +23,8 @@ class GameBoard extends Component<Props> {
         const player: Player = players.find(player => player.isHuman);
         const enemy: Player = players.find(player => !player.isHuman);
         const showEnemyDice = currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME;
-        const playerDice = currentState !== GAMESTATE.READY ? player.rolledDice : [];
+        const showPlayerDice = currentState !== GAMESTATE.READY && currentState !== GAMESTATE.STARTGAME && currentState !== GAMESTATE.CONNECTING;
+        const playerDice =  showPlayerDice ? player.rolledDice : [];
         const enemyDice = showEnemyDice ? enemy.rolledDice : [];
 
         return (
