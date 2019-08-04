@@ -58,27 +58,7 @@ class App extends Component<Props, State> {
           }
         </div>
 
-        <Popover
-          content={
-            <Pane
-              width={340}
-              height={340}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexDirection="column"
-            >
-              {this.renderStartGamePopover()}
-            </Pane>
-          }
-          position={Position.TOP}
-          isShown={isStartofNewGame}
-        >
-          <Pane
-            width={0}
-            alignSelf="center"
-          />
-        </Popover>
+        {this.renderPopover()}
 
         <GameBoard
           rollDice={this.rollDice}
@@ -94,10 +74,6 @@ class App extends Component<Props, State> {
         <div className="damage-display-total__container">
           { showDamage
             ? <DamageDisplayTotal damage={playerDamage} />
-            : null
-          }
-          { isEndOfGame
-            ? <h1 className="win-message">{this.getWinMessage()}</h1>
             : null
           }
         </div>
@@ -116,6 +92,38 @@ class App extends Component<Props, State> {
     );
   }
 
+  private renderPopover = () => {
+    const { currentState } = this.mGameModel;
+    const isStartofNewGame = currentState === GAMESTATE.STARTGAME || currentState === GAMESTATE.CONNECTING;
+    const isShown = isStartofNewGame || currentState === GAMESTATE.ENDGAME;
+    return (
+      <Popover
+        content={
+          <Pane
+            width={340}
+            height={340}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            { isStartofNewGame ?
+              this.renderStartGamePopover()
+              : this.renderEndGamePopover()
+            }
+          </Pane>
+        }
+        position={Position.TOP}
+        isShown={isShown}
+      >
+      <Pane
+        width={0}
+        alignSelf="center"
+      />
+    </Popover>
+    )
+  }
+
   private renderStartGamePopover = () => {
     const { currentState } = this.mGameModel;
 
@@ -124,11 +132,12 @@ class App extends Component<Props, State> {
         <Pane
           display="flex"
           flexDirection="column"
-          justifyContent="flex-start"
+          justifyContent="center"
           alignItems="center"
           height={340}
         >
           <Spinner />
+          <Text marginY={50}>Connecting...</Text>
         </Pane>
       )
     } else if (currentState === GAMESTATE.STARTGAME) {
@@ -169,6 +178,20 @@ class App extends Component<Props, State> {
         </Pane>
       )
     }
+  }
+
+  private renderEndGamePopover = () => {
+    return  (
+      <Pane
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height={340}
+      >
+        <Heading size={700}>{this.getWinMessage()}</Heading>
+      </Pane>
+    )
   }
 
   private rollDice = () => {
@@ -217,19 +240,13 @@ class App extends Component<Props, State> {
   }
 
   private getWinMessage() {
-    if (this.state.currentState === GAMESTATE.ENDGAME) {
-      if (this.mGameModel.winner === WINNER.PLAYER) {
-        return "You Win!";
-      } else if (this.mGameModel.winner === WINNER.ENEMY) {
-        return "You Lose!"
-      } else {
-        return "Tie!";
-      }
+    if (this.mGameModel.winner === WINNER.PLAYER) {
+      return "You Win!";
+    } else if (this.mGameModel.winner === WINNER.ENEMY) {
+      return "You Lose!"
+    } else {
+      return "Tie!";
     }
-  }
-
-  private onJoinGameClick = () => {
-    this.mGameModel.socketConnection.joinGame().then(() => this.setState({isConnected: true}));
   }
 
   private onUpdateState() {
