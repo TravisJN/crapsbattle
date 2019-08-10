@@ -46,6 +46,7 @@ class App extends Component<Props, State> {
           isHuman={false}
           turn={this.mGameModel.turn}
           hp={this.mGameModel.enemy.hp}
+          maxHp={this.mGameModel.enemy.maxHp}
           currentState={this.mGameModel.currentState}
           reset={this.reset}
           advance={this.advance}
@@ -83,6 +84,7 @@ class App extends Component<Props, State> {
           isHuman={true}
           turn={this.mGameModel.turn}
           hp={this.mGameModel.human.hp}
+          maxHp={this.mGameModel.human.maxHp}
           currentState={this.mGameModel.currentState}
           reset={this.reset}
           advance={this.advance}
@@ -96,6 +98,7 @@ class App extends Component<Props, State> {
     const { currentState } = this.mGameModel;
     const isStartofNewGame = currentState === GAMESTATE.STARTGAME || currentState === GAMESTATE.CONNECTING;
     const isShown = isStartofNewGame || currentState === GAMESTATE.ENDGAME;
+
     return (
       <Popover
         content={
@@ -190,6 +193,13 @@ class App extends Component<Props, State> {
         height={340}
       >
         <Heading size={700}>{this.getWinMessage()}</Heading>
+        <Button
+          onClick={() => {
+            this.reset();
+          }}
+        >
+          Reset
+        </Button>
       </Pane>
     )
   }
