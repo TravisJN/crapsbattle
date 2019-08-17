@@ -10,6 +10,7 @@ export enum GAMESTATE {
     ROLLING,
     WAITING_TO_FIGHT,
     FIGHTING,
+    ANIMATING,
     ENDTURN,
     ENDGAME
 }
@@ -134,6 +135,14 @@ export default class GameStateModel {
                 this.compareLanes();
                 this.applyDamage();
                 this.checkWin();
+                //this.currentState = GAMESTATE.ANIMATING;
+                if (this.winner === WINNER.NONE) {
+                    this.currentState = GAMESTATE.ENDTURN;
+                } else {
+                    this.currentState = GAMESTATE.ENDGAME;
+                }
+                break;
+            case GAMESTATE.ANIMATING:
                 if (this.winner === WINNER.NONE) {
                     this.currentState = GAMESTATE.ENDTURN;
                 } else {
@@ -169,6 +178,11 @@ export default class GameStateModel {
         this.advance();
     }
 
+    /**
+     * Updates this.lanes
+     * Assigns lanes to an array of positive or negative integers which represent the
+     * amount of damage dealt or received for each dice lane.
+     */
     private compareLanes() {
         // compare dice at each index and build an array of psitive or negative dmg
         this.lanes = Array.from({length: GameStateModel.NUM_DICE}, (e, index: number) => {
@@ -179,25 +193,11 @@ export default class GameStateModel {
         });
     }
 
-    private initializePlayers = () => {
-        // Players might need to be separate models
-        return Array.from({length: 2}, (e, index: number) => {
-            const isHuman = index === 0;
-            const player = new Player({
-                isHuman,
-                maxHp: 10,
-            });
-
-            if (isHuman) {
-                this.mPlayer = player;
-            } else {
-                this.mEnemy = player;
-            }
-
-            return player;
-        });
-    }
-
+    /**
+     * Iterates through lanes and accumulates the total damage to each player
+     * Each player's total damage amount is stored
+     * Each player's hp is updated (hp is reduced by amount of damage to player)
+     */
     private applyDamage = () => {
         this.lanes.forEach((aLane) => {
             if (aLane > 0) {
@@ -222,6 +222,25 @@ export default class GameStateModel {
         } else if (this.mEnemy.hp <= 0) {
             this.winner = WINNER.PLAYER;
         }
+    }
+
+    private initializePlayers = () => {
+        // Players might need to be separate models
+        return Array.from({length: 2}, (e, index: number) => {
+            const isHuman = index === 0;
+            const player = new Player({
+                isHuman,
+                maxHp: 10,
+            });
+
+            if (isHuman) {
+                this.mPlayer = player;
+            } else {
+                this.mEnemy = player;
+            }
+
+            return player;
+        });
     }
 
     private resetTurn = () => {

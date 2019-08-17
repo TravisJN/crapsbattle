@@ -14,13 +14,7 @@ export default class BattleController {
     public player1Damage: number = 0;
     public player2Damage: number = 0;
 
-    private player1Die: Die;
-    private player2Die: Die;
-
-    constructor(player1Die: Die, player2Die: Die) {
-        this.player1Die = player1Die;
-        this.player2Die = player2Die;
-
+    constructor(private player1Die: Die, private player2Die: Die) {
         this.compareDice();
     }
 

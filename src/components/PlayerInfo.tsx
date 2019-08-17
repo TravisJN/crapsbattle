@@ -3,7 +3,6 @@ import { GAMESTATE } from '../data/GameStateModel';
 import './PlayerInfo.css';
 
 interface Props {
-  turn: number;
   hp: number;
   currentState: GAMESTATE;
   reset: ()=>void;
@@ -18,7 +17,6 @@ export default class PlayerInfo extends Component<Props> {
     if (this.props.isHuman) {
       return (
         <div className="player">
-          <p>Turn: {this.props.turn}</p>
           {/* <p>hp: {this.props.hp}</p> */}
           {this.renderHpBar()}
 

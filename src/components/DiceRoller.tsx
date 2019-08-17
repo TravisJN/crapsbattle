@@ -17,6 +17,7 @@ interface Props {
 class DiceRoller extends Component<Props> {
   public render() {
     const { player, currentState, dice } = this.props;
+    const isAnimating: boolean = currentState === GAMESTATE.ANIMATING;
 
     if (!player.isHuman) {
       if (currentState === GAMESTATE.ROLLING) {
@@ -34,17 +35,23 @@ class DiceRoller extends Component<Props> {
       }
     }
 
+    let dieClass: string = "dice-roller__die-";
+
     return (
       <div className="dice-roller-container">
         <div className="dice-roller__dice-row">
           {dice.map((die: Die, idx: number) => {
-            return <DieComponent
-                      num={die.number}
-                      idx={idx}
-                      selected={die.selected}
-                      onClick={this.onDieClicked}
-                      key={"die"+idx}
-                    />
+            return (
+              <div className={"dice-roller__die"} key={"die-container-"+idx}>
+                <DieComponent
+                  num={die.number}
+                  idx={idx}
+                  selected={die.selected}
+                  onClick={this.onDieClicked}
+                  key={"die"+idx}
+                />
+              </div>
+            );
           })}
         </div>
       </div>

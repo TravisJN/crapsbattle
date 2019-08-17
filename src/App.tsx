@@ -44,7 +44,6 @@ class App extends Component<Props, State> {
       <div className="App">
         <PlayerInfo
           isHuman={false}
-          turn={this.mGameModel.turn}
           hp={this.mGameModel.enemy.hp}
           maxHp={this.mGameModel.enemy.maxHp}
           currentState={this.mGameModel.currentState}
@@ -82,7 +81,6 @@ class App extends Component<Props, State> {
 
         <PlayerInfo
           isHuman={true}
-          turn={this.mGameModel.turn}
           hp={this.mGameModel.human.hp}
           maxHp={this.mGameModel.human.maxHp}
           currentState={this.mGameModel.currentState}
@@ -188,18 +186,12 @@ class App extends Component<Props, State> {
       <Pane
         display="flex"
         flexDirection="column"
-        justifyContent="center"
+        justifyContent="space-around"
         alignItems="center"
         height={340}
       >
-        <Heading size={700}>{this.getWinMessage()}</Heading>
-        <Button
-          onClick={() => {
-            this.reset();
-          }}
-        >
-          Reset
-        </Button>
+        <Heading size={900}>{this.getWinMessage()}</Heading>
+        <Button onClick={this.reset}>Reset</Button>
       </Pane>
     )
   }
