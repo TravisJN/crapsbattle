@@ -135,12 +135,12 @@ export default class GameStateModel {
                 this.compareLanes();
                 this.applyDamage();
                 this.checkWin();
-                //this.currentState = GAMESTATE.ANIMATING;
-                if (this.winner === WINNER.NONE) {
-                    this.currentState = GAMESTATE.ENDTURN;
-                } else {
-                    this.currentState = GAMESTATE.ENDGAME;
-                }
+                this.currentState = GAMESTATE.ANIMATING;
+                // if (this.winner === WINNER.NONE) {
+                //     this.currentState = GAMESTATE.ENDTURN;
+                // } else {
+                //     this.currentState = GAMESTATE.ENDGAME;
+                // }
                 break;
             case GAMESTATE.ANIMATING:
                 if (this.winner === WINNER.NONE) {

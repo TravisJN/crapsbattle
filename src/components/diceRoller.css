@@ -8,7 +8,6 @@
     height: 100%;
     display: flex;
     justify-content: space-around;
-    align-items: center;
 }
 
 .selected {
@@ -28,8 +27,26 @@
     font-size: 18pt;
 }
 
-.dice-roller__die {
-    top: 100px;
-    animation-duration: 1s;
-    animation-name: die;
+.dice-roller__die-player {
+    position: relative;
+    top: 60px;
+}
+
+.dice-roller__die-enemy {
+    position: relative;
+    top: 0px;
+    opacity: 0;
+}
+
+.animate-player-ready {
+    transition-property: top;
+    transition-duration: 0.25s;
+    top: 0%;
+}
+
+.animate-enemy-ready {
+    transition-property: top, opacity;
+    transition-duration: 0.25s, 0.25s;
+    top: 60px;
+    opacity: 1;
 }

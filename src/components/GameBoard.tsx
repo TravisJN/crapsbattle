@@ -22,7 +22,8 @@ class GameBoard extends Component<Props> {
         const { currentState, players, rollDice, selectDie, lanes } = this.props;
         const player: Player = players.find(player => player.isHuman);
         const enemy: Player = players.find(player => !player.isHuman);
-        const showEnemyDice = currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME;
+        // const showEnemyDice = currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ANIMATING;
+        const showEnemyDice = true;
         const showPlayerDice = currentState !== GAMESTATE.READY && currentState !== GAMESTATE.STARTGAME && currentState !== GAMESTATE.CONNECTING;
         const playerDice =  showPlayerDice ? player.rolledDice : [];
         const enemyDice = showEnemyDice ? enemy.rolledDice : [];

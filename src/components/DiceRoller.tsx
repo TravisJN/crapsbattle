@@ -17,32 +17,40 @@ interface Props {
 class DiceRoller extends Component<Props> {
   public render() {
     const { player, currentState, dice } = this.props;
-    const isAnimating: boolean = currentState === GAMESTATE.ANIMATING;
+    const isFighting: boolean = currentState === GAMESTATE.ANIMATING || currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME;
 
-    if (!player.isHuman) {
-      if (currentState === GAMESTATE.ROLLING) {
-        return (
-          <div className="dice-roller-container">
-            <p className="dice-roller__enemy-text">Rolling...</p>
-          </div>
-        )
-      } else if (currentState === GAMESTATE.FIGHTING) {
-        return (
-          <div className="dice-roller-container">
-            <p className="dice-roller__enemy-text">Ready to fight!</p>
-          </div>
-        )
+    // if (!player.isHuman) {
+    //   if (currentState === GAMESTATE.ROLLING) {
+    //     return (
+    //       <div className="dice-roller-container">
+    //         <p className="dice-roller__enemy-text">Rolling...</p>
+    //       </div>
+    //     )
+    //   } else if (currentState === GAMESTATE.FIGHTING) {
+    //     return (
+    //       <div className="dice-roller-container">
+    //         <p className="dice-roller__enemy-text">Ready to fight!</p>
+    //       </div>
+    //     )
+    //   }
+    // }
+
+    let dieClass: string = player.isHuman ? "dice-roller__die-player" : "dice-roller__die-enemy";
+
+    if (isFighting) {
+      if (player.isHuman) {
+        dieClass += " animate-player-ready";
+      } else {
+        dieClass += " animate-enemy-ready";
       }
     }
-
-    let dieClass: string = "dice-roller__die-";
 
     return (
       <div className="dice-roller-container">
         <div className="dice-roller__dice-row">
           {dice.map((die: Die, idx: number) => {
             return (
-              <div className={"dice-roller__die"} key={"die-container-"+idx}>
+              <div className={dieClass} key={"die-container-"+idx}>
                 <DieComponent
                   num={die.number}
                   idx={idx}
