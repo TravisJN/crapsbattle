@@ -29,6 +29,7 @@ export enum GAMETYPE {
 export default class GameStateModel {
     public static NUM_DICE: number = 6;
     private static NUM_TURNS: number = 3;
+    private static MAX_HP: number = 100;
 
     public currentState: GAMESTATE = GAMESTATE.STARTGAME;
     public winner: WINNER = WINNER.NONE;
@@ -183,7 +184,7 @@ export default class GameStateModel {
             let player: Die = this.mPlayer.rolledDice[index];
             let enemy: Die = this.mEnemy.rolledDice[index];
 
-            return player.number - enemy.number;
+            return player.points - enemy.points;
         });
     }
 
@@ -224,7 +225,7 @@ export default class GameStateModel {
             const isHuman = index === 0;
             const player = new Player({
                 isHuman,
-                maxHp: 10,
+                maxHp: GameStateModel.MAX_HP,
             });
 
             if (isHuman) {

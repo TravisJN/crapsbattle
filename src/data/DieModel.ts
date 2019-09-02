@@ -1,12 +1,29 @@
 
 export default class Die {
-    public number: number;
     private mIndex: number;
     private mSelected: boolean = false;
+    private mNumber: number;
+    private mMultiplier: number  = 1;
 
     constructor(startingNum: number, index: number) {
-        this.number = startingNum;
+        this.mNumber = startingNum;
         this.mIndex = index;
+    }
+
+    set multiplier(newMultiplier: number) {
+        this.mMultiplier = newMultiplier;
+    }
+
+    get points(): number {
+        return this.mNumber * this.mMultiplier;
+    }
+
+    get number(): number {
+        return this.mNumber;
+    }
+
+    set number(newNumber: number) {
+        this.mNumber = newNumber;
     }
 
     get index(): number {
