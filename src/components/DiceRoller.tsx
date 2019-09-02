@@ -12,28 +12,13 @@ interface Props {
   dice: Die[];
   selectDie: (index: number) => void;
   player: Player;
+  advance?: () => void;
 }
 
 class DiceRoller extends Component<Props> {
   public render() {
     const { player, currentState, dice } = this.props;
     const isFighting: boolean = currentState === GAMESTATE.ANIMATING || currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME;
-
-    // if (!player.isHuman) {
-    //   if (currentState === GAMESTATE.ROLLING) {
-    //     return (
-    //       <div className="dice-roller-container">
-    //         <p className="dice-roller__enemy-text">Rolling...</p>
-    //       </div>
-    //     )
-    //   } else if (currentState === GAMESTATE.FIGHTING) {
-    //     return (
-    //       <div className="dice-roller-container">
-    //         <p className="dice-roller__enemy-text">Ready to fight!</p>
-    //       </div>
-    //     )
-    //   }
-    // }
 
     let dieClass: string = player.isHuman ? "dice-roller__die-player" : "dice-roller__die-enemy";
 
@@ -50,7 +35,7 @@ class DiceRoller extends Component<Props> {
         <div className="dice-roller__dice-row">
           {dice.map((die: Die, idx: number) => {
             return (
-              <div className={dieClass} key={"die-container-"+idx}>
+              <div className={dieClass} key={"die-container-"+idx} onTransitionEnd={this.onAnimationEnd}>
                 <DieComponent
                   num={die.number}
                   idx={idx}
@@ -64,6 +49,13 @@ class DiceRoller extends Component<Props> {
         </div>
       </div>
     )
+  }
+
+  private onAnimationEnd = (a: any) => {
+    // This callback gets called 18 times and I don't know why
+    if (this.props.currentState === GAMESTATE.ANIMATING) {
+      this.props.advance();
+    }
   }
 
   private onDieClicked = (index: number) => {

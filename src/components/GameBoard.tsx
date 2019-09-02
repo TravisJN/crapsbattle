@@ -19,10 +19,9 @@ interface Props {
 
 class GameBoard extends Component<Props> {
     render() {
-        const { currentState, players, rollDice, selectDie, lanes } = this.props;
+        const { currentState, players, rollDice, selectDie, lanes, advance } = this.props;
         const player: Player = players.find(player => player.isHuman);
         const enemy: Player = players.find(player => !player.isHuman);
-        // const showEnemyDice = currentState === GAMESTATE.ENDTURN || currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ANIMATING;
         const showEnemyDice = true;
         const showPlayerDice = currentState !== GAMESTATE.READY && currentState !== GAMESTATE.STARTGAME && currentState !== GAMESTATE.CONNECTING;
         const playerDice =  showPlayerDice ? player.rolledDice : [];
@@ -36,6 +35,7 @@ class GameBoard extends Component<Props> {
                     rollDice={rollDice}
                     currentState={currentState}
                     selectDie={() => null}  // can't select enemy dice
+                    advance={advance}
                 />
                 <DamageDisplayPerLane scores={lanes} />
                 <DiceRoller
@@ -44,6 +44,7 @@ class GameBoard extends Component<Props> {
                     rollDice={rollDice}
                     currentState={currentState}
                     selectDie={selectDie}
+                    advance={advance}
                 />
             </div>
         )

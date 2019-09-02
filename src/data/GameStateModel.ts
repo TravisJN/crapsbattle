@@ -1,7 +1,6 @@
 import Player from "./Player";
 import Die from "./DieModel";
 import {Connection} from './ConnectionController';
-import { threadId } from "worker_threads";
 
 export enum GAMESTATE {
     STARTGAME,
@@ -28,7 +27,7 @@ export enum GAMETYPE {
 }
 
 export default class GameStateModel {
-    public static NUM_DICE: number = 4;
+    public static NUM_DICE: number = 6;
     private static NUM_TURNS: number = 3;
 
     public currentState: GAMESTATE = GAMESTATE.STARTGAME;
@@ -136,11 +135,6 @@ export default class GameStateModel {
                 this.applyDamage();
                 this.checkWin();
                 this.currentState = GAMESTATE.ANIMATING;
-                // if (this.winner === WINNER.NONE) {
-                //     this.currentState = GAMESTATE.ENDTURN;
-                // } else {
-                //     this.currentState = GAMESTATE.ENDGAME;
-                // }
                 break;
             case GAMESTATE.ANIMATING:
                 if (this.winner === WINNER.NONE) {
