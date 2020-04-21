@@ -9,7 +9,7 @@ export class Connection {
   private mPromise;
   private mResolve;
 
-  public connection = io('http://localhost:8080');
+  public connection = io('http://192.168.0.105:8080');
 
   constructor() {
 

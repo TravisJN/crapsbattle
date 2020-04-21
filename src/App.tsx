@@ -52,10 +52,7 @@ class App extends Component<Props, State> {
         />
 
         <div className="damage-display-total__container">
-          { showDamage
-            ? <DamageDisplayTotal damage={enemyDamage} />
-            : null
-          }
+            <DamageDisplayTotal currentState={currentState} damage={enemyDamage} />
         </div>
 
         {this.renderPopover()}
@@ -72,10 +69,7 @@ class App extends Component<Props, State> {
         />
 
         <div className="damage-display-total__container">
-          { showDamage
-            ? <DamageDisplayTotal damage={playerDamage} />
-            : null
-          }
+            <DamageDisplayTotal currentState={currentState} damage={playerDamage} />
         </div>
 
 
