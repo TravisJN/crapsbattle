@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './DamageDisplayPerLane.css';
+import './styles/DamageDisplayPerLane.css';
 import GameStateModel from '../data/GameStateModel'; // This is the class, not an instance
 
 interface Props {

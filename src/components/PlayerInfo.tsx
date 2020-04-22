@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { GAMESTATE } from '../data/GameStateModel';
-import './PlayerInfo.css';
+import './styles/PlayerInfo.css';
 
 interface Props {
   hp: number;

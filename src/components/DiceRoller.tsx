@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './diceRoller.css';
+import './styles/diceRoller.css';
 import DieComponent from './DieComponent';
 import Die from '../data/DieModel';
 import { GAMESTATE } from '../data/GameStateModel';
@@ -36,6 +36,9 @@ class DiceRoller extends Component<Props> {
           {dice.map((die: Die, idx: number) => {
             return (
               <div className={dieClass} key={"die-container-"+idx} onTransitionEnd={this.onAnimationEnd}>
+                <div className="die-container__multiplier">
+                  x2
+                </div>
                 <DieComponent
                   num={die.number}
                   idx={idx}

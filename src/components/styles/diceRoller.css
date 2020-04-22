@@ -8,6 +8,7 @@
     height: 100%;
     display: flex;
     justify-content: space-around;
+    align-items: center;
 }
 
 .selected {
@@ -49,4 +50,10 @@
     transition-duration: 0.25s, 0.25s;
     top: 60px;
     opacity: 1;
+}
+
+.die-container__multiplier {
+    width: 100%;
+    color: white;
+    align-self: center;
 }

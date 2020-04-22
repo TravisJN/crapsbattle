@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DiceRoller from './DiceRoller';
 import { GAMESTATE } from '../data/GameStateModel';
 import Die from '../data/DieModel';
-import './GameBoard.css';
+import './styles/GameBoard.css';
 import Player from '../data/Player';
 import DamageDisplayPerLane from './DamageDisplayPerLane';
 

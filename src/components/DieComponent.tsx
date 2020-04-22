@@ -5,7 +5,7 @@ import dice3 from '../assets/dice-3.png';
 import dice4 from '../assets/dice-4.png';
 import dice5 from '../assets/dice-5.png';
 import dice6 from '../assets/dice-6.png';
-import './diceRoller.css';
+import './styles/diceRoller.css';
 
 interface Props {
     num: number;
