@@ -34,11 +34,13 @@ class DiceRoller extends Component<Props> {
       <div className="dice-roller-container">
         <div className="dice-roller__dice-row">
           {dice.map((die: Die, idx: number) => {
+            const multiplierString: string = (die.multiplier && die.multiplier > 1) ? `x${die.multiplier}` : '';
+
             return (
               <div className="dice-roller__lane" key={"die-container-"+idx} onTransitionEnd={this.onAnimationEnd}>
                 <div className={dieClass}>
                   <div className="die-container__multiplier">
-                    x2
+                    {multiplierString}
                   </div>
                   <DieComponent
                     num={die.number}

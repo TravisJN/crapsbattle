@@ -14,6 +14,10 @@ export default class Die {
         this.mMultiplier = newMultiplier;
     }
 
+    get multiplier(): number {
+        return this.mMultiplier;
+    }
+
     get points(): number {
         return this.mNumber * this.mMultiplier;
     }
