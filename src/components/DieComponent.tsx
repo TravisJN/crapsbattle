@@ -5,7 +5,7 @@ import dice3 from '../assets/dice-3.png';
 import dice4 from '../assets/dice-4.png';
 import dice5 from '../assets/dice-5.png';
 import dice6 from '../assets/dice-6.png';
-import './styles/diceRoller.css';
+import './styles/DieComponent.css';
 
 interface Props {
     num: number;
@@ -30,13 +30,13 @@ class DieComponent extends Component<Props, State> {
         const { idx, num } = this.props;
         return (
             <div className={this.getContainerClassName()} key={idx} onClick={this.select}>
-                <img src={this.imageMap[num]} width="60" height="60" />
+                <img src={this.imageMap[num]} width="100%" height="100%" />
             </div>
         )
     }
 
     private getContainerClassName = () => {
-        return this.props.selected ? "dice-roller_die-container selected" : "dice-roller_die-container";
+        return this.props.selected ? "die-component__die-container selected" : "die-component__die-container";
     }
 
     private select = () => {
