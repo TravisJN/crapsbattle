@@ -35,17 +35,19 @@ class DiceRoller extends Component<Props> {
         <div className="dice-roller__dice-row">
           {dice.map((die: Die, idx: number) => {
             return (
-              <div className={dieClass} key={"die-container-"+idx} onTransitionEnd={this.onAnimationEnd}>
-                <div className="die-container__multiplier">
-                  x2
+              <div className="dice-roller__lane" key={"die-container-"+idx} onTransitionEnd={this.onAnimationEnd}>
+                <div className={dieClass}>
+                  <div className="die-container__multiplier">
+                    x2
+                  </div>
+                  <DieComponent
+                    num={die.number}
+                    idx={idx}
+                    selected={die.selected}
+                    onClick={this.onDieClicked}
+                    key={"die"+idx}
+                  />
                 </div>
-                <DieComponent
-                  num={die.number}
-                  idx={idx}
-                  selected={die.selected}
-                  onClick={this.onDieClicked}
-                  key={"die"+idx}
-                />
               </div>
             );
           })}
