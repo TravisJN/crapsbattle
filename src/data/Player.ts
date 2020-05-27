@@ -20,7 +20,7 @@ export default class Player {
     }
 
     public rollDice() {
-        this.mNumberCount = this.getNumberCount();
+        this.mNumberCount = this.getMultiplierCount();
         // First
         this.rolledDice = this.rolledDice.map((aDie: Die) => {
             if (!aDie.selected) {
@@ -55,10 +55,28 @@ export default class Player {
         return Math.floor(Math.random() * Math.floor(max)) + min;
     }
 
-    private getNumberCount() {
+    private getMultiplierCount() {
         return {
             ATTACK: {},
             DEFENSE: {},
         };
+    }
+
+    public get attackTotal() {
+        return this.rolledDice.reduce((total, currentDie) => {
+            if (currentDie.type === eDiceType.ATTACK) {
+                return total + currentDie.points;
+            }
+            return total;
+        }, 0);
+    }
+
+    public get defenseTotal() {
+        return this.rolledDice.reduce((total, currentDie) => {
+            if (currentDie.type === eDiceType.DEFENSE) {
+                return total + currentDie.points;
+            }
+            return total;
+        }, 0);
     }
 }
