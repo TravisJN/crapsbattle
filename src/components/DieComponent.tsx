@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { eDiceType } from '../data/DieModel';
 import dice1 from '../assets/dice-1.png';
 import dice2 from '../assets/dice-2.png';
 import dice3 from '../assets/dice-3.png';
@@ -12,6 +13,7 @@ interface Props {
     idx: number;
     selected: boolean;
     onClick: any;
+    type: eDiceType;
  }
 
 interface State { }
@@ -36,7 +38,20 @@ class DieComponent extends Component<Props, State> {
     }
 
     private getContainerClassName = () => {
-        return this.props.selected ? "die-component__die-container selected" : "die-component__die-container";
+        const { selected, type } = this.props;
+        let className: string = "die-component__die-container";
+
+        if (selected) {
+            className += " selected";
+        }
+
+        if (type === eDiceType.ATTACK) {
+            className += " attack";
+        } else {
+            className += " defend";
+        }
+
+        return className;
     }
 
     private select = () => {

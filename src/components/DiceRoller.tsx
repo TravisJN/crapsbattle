@@ -48,6 +48,7 @@ class DiceRoller extends Component<Props> {
                     selected={die.selected}
                     onClick={this.onDieClicked}
                     key={"die"+idx}
+                    type={die.type}
                   />
                 </div>
               </div>

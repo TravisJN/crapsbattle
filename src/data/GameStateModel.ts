@@ -132,7 +132,7 @@ export default class GameStateModel {
                 break;
             case GAMESTATE.FIGHTING:
                 // compare lanes
-                this.compareLanes();
+                // this.compareLanes();
                 this.applyDamage();
                 this.checkWin();
                 this.currentState = GAMESTATE.ANIMATING;
@@ -154,7 +154,7 @@ export default class GameStateModel {
                 console.error("Cannot advance from ENDGAME state!");
                 break;
         }
-
+        console.log(GAMESTATE[this.currentState]);
         if (this.isMultiplayer) {
             this.advanceServer();
         }
@@ -194,16 +194,26 @@ export default class GameStateModel {
      * Each player's hp is updated (hp is reduced by amount of damage to player)
      */
     private applyDamage = () => {
-        this.lanes.forEach((aLane) => {
-            if (aLane > 0) {
-                this.mEnemyDamage += aLane;
-            } else if (aLane < 0) {
-                this.mPlayerDamage += Math.abs(aLane);
-            }
-        });
+        // this.lanes.forEach((aLane) => {
+        //     if (aLane > 0) {
+        //         this.mEnemyDamage += aLane;
+        //     } else if (aLane < 0) {
+        //         this.mPlayerDamage += Math.abs(aLane);
+        //     }
+        // });
+        this.mEnemyDamage = this.mPlayer.attackTotal - this.mEnemy.defenseTotal;
+        this.mPlayerDamage = this.mEnemy.attackTotal - this.mPlayer.defenseTotal;
 
-        this.mEnemy.hp -= this.mEnemyDamage;
-        this.mPlayer.hp -= this.mPlayerDamage;
+        if (this.mEnemyDamage > 0) {
+            this.mEnemy.hp -= this.mEnemyDamage;
+        } else {
+            this.mEnemyDamage = 0;
+        }
+        if (this.mPlayerDamage > 0) {
+            this.mPlayer.hp -= this.mPlayerDamage;
+        } else {
+            this.mPlayerDamage = 0;
+        }
     }
 
     private checkWin = () => {

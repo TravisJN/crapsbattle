@@ -26,6 +26,7 @@ class GameBoard extends Component<Props> {
         const showPlayerDice = currentState !== GAMESTATE.READY && currentState !== GAMESTATE.STARTGAME && currentState !== GAMESTATE.CONNECTING;
         const playerDice =  showPlayerDice ? player.rolledDice : [];
         const enemyDice = showEnemyDice ? enemy.rolledDice : [];
+        const showDamage = currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN;
 
         return (
             <div className="game-board">
@@ -37,7 +38,7 @@ class GameBoard extends Component<Props> {
                     selectDie={() => null}  // can't select enemy dice
                     advance={advance}
                 />
-                <DamageDisplayPerLane scores={lanes} />
+                <DamageDisplayPerLane player={player} enemy={enemy} showDamage={showDamage} />
                 <DiceRoller
                     player={player}
                     dice={playerDice}

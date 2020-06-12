@@ -30,14 +30,11 @@
 
 .dice-roller__die-player {
     position: relative;
-    top: 90px;
+    top: 85px;
 }
 
 .dice-roller__lane {
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .dice-roller__die-enemy {
@@ -55,7 +52,7 @@
 .animate-enemy-ready {
     transition-property: top, opacity;
     transition-duration: 0.25s, 0.25s;
-    top: 90px;
+    top: 110px;
     opacity: 1;
 }
 

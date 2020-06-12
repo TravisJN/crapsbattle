@@ -10,20 +10,21 @@ interface Props {
 class DamageDisplayTotal extends Component<Props>{
     render() {
         const { currentState } = this.props;
+        let damageText: string | number;
 
         if (currentState === GAMESTATE.ENDGAME || currentState === GAMESTATE.ENDTURN) {
-            return (
-                <div className="damage-display-total__container">
-                    <h1 className="damage-display-total__damage-text">{this.props.damage}</h1>
-                </div>
-            );
-        } else {
-            return (
-                <div className="damage-display-total__container">
-                    <h1 className="damage-display-total__damage-text">Roll the dice...</h1>
-                </div>
-            );
+            damageText = this.props.damage;
+        } else if (currentState === GAMESTATE.FIGHTING) {
+            damageText = 'Ready to Fight!';
+        } else if (currentState === GAMESTATE.READY || currentState === GAMESTATE.ROLLING) {
+            damageText = 'Roll the dice...';
         }
+
+        return (
+            <div className="damage-display-total__container">
+                <h1 className="damage-display-total__damage-text">{damageText}</h1>
+            </div>
+        );
     }
 }
 
