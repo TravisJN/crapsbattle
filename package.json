@@ -10,7 +10,7 @@
     "evergreen-ui": "^4.18.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8",
+    "react-scripts": "5.0.1",
     "socket.io-client": "^2.2.0",
     "typescript": "^3.4.2"
   },
